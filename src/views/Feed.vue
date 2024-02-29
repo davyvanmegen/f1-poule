@@ -10,19 +10,19 @@
             <form>
                 <div class="form-group">
                     <label>First Place</label>
-                    <input type="text" class="form-control" v-model="userName"/>
+                    <input type="text" class="form-control" v-model="pos1"/>
                 </div>
                 <div class="form-group">
                     <label>Second Place</label>
-                    <input type="text" class="form-control" v-model="email"/>
+                    <input type="text" class="form-control" v-model="pos2"/>
                 </div>
                 <div class="form-group">
                     <label>Third place</label>
-                    <input type="password" class="form-control" v-model="password1"/>
+                    <input type="text" class="form-control" v-model="pos3"/>
                 </div>
                 <div class="form-group">
                     <label>Fastest Lap</label>
-                    <input type="password" class="form-control" v-model="password2"/>
+                    <input type="text" class="form-control" v-model="fastestLap"/>
                 </div>
                 <div class="my-3">
                     <button type="submit" class="btn btn-primary" @click="sendData">Send prediction</button>
@@ -36,7 +36,7 @@
 <script>
 import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
-import { collection, addDoc } from 'firebase/firestore'
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore'
 import axios from 'axios';
 
 export default {
@@ -63,16 +63,12 @@ export default {
   },
   methods: {
     async sendData() {
-      // This code does not work unfortunately, needs to be checked
-      // const colRef = collection(db, 'users')
-      // // data to send
-      // const dataObj = {
-      //   firstName: 'Erida',
-      //   lastName: 'van Megen',
-      //   dob: '2000'
-      // }
-
-      // const docRef = await addDoc(colRef, dataObj)
+      await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
+        position1: this.pos1,
+        position2: this.pos2,
+        position3: this.pos3,
+        fastLab: this.fastestLap
+      }, {merge: true})
     }
   }
 }
