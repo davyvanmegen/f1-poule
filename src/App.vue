@@ -36,6 +36,7 @@
 <script>
 import Navigation from './components/Navigation.vue'
 import { getAuth, onAuthStateChanged, signOut} from "firebase/auth"
+import { auth } from './firebase/init.js'
 
 export default {
   name: 'App',
@@ -43,8 +44,7 @@ export default {
     Navigation
   },
   mounted() {
-    this.auth = getAuth()
-    onAuthStateChanged(this.auth, (user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;
       } else {
@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     handleSignOut() {
-      signOut(this.auth).then(() => {
+      signOut(auth).then(() => {
         this.$router.push("/")
       })
     }

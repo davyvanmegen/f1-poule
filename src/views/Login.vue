@@ -17,7 +17,7 @@
                 </div>
                 <p v-if="errMsg">{{ errMsg }}</p>
                 <div class="my-3">
-                    <button type="submit" class="btn btn-primary" @click="register">Login</button>
+                    <button type="submit" class="btn btn-primary" @click="login">Login</button>
                 </div>
                 <div class="my-3">
                     <button type="submit" class="btn btn-secondary" @click="signInWithGoogle">Login with google</button>
@@ -32,6 +32,7 @@
 import { ref } from "vue";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'vue-router'
+import { auth } from '../firebase/init.js'
 
 
 export default {
@@ -39,19 +40,19 @@ export default {
         return {
             email: '',
             password: '',
-            auth: getAuth(),
             errMsg: null
         }
     },
     methods: {
-        register() {
+        login() {
             // need .value because ref()
         console.log(this.email)
-        signInWithEmailAndPassword(this.auth, this.email, this.password)
-            .then((data) => {
+        signInWithEmailAndPassword(auth, this.email, this.password)
+            .then(() => {
                 console.log("Successfully logged in")
 
-                console.log(this.auth.currentUser)
+                console.log(auth.currentUser)
+                
                 this.$router.push('/feed')
             })
             .catch((error) => {
