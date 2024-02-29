@@ -4,7 +4,7 @@
         <div class="col-md-4 offset-md-0">
             <div>
             <div>
-                <h4>Prediction for --insert next race--:</h4>
+                <h4>Prediction for {{raceApi.raceName}} --implement date to go to next race--:</h4>
                 <hr />
             </div>
             <form>
@@ -37,6 +37,7 @@
 import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
 import { collection, addDoc } from 'firebase/firestore'
+import axios from 'axios';
 
 export default {
   data () {
@@ -47,13 +48,17 @@ export default {
       pos3: '',
       fastestLap: '',
       nextRace: 'Netherlands',
-      predictionArray: []
+      predictionArray: [],
+      raceApi: ''
     }
   },
-  mounted() {
+  async mounted() {
     if (auth.currentUser) {
       // set local 'displayName' to user's displayName
       this.displayName = auth.currentUser.displayName
+      const response = await axios.get('https://ergast.com/api/f1/2024.json');
+      this.raceApi = response.data.MRData.RaceTable.Races[0];
+      
     }
   },
   methods: {
