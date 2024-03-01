@@ -40,7 +40,8 @@
 import {createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from 'vue-router'
 import { auth } from '../firebase/init.js'
-
+import db from '../firebase/init.js'
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore'
 
 export default {
     data() {
@@ -66,6 +67,7 @@ export default {
                         displayName: this.userName
                     })
                     this.$router.push('/feed')
+                    this.sendUserData()
                 })
                 .catch((error) => {
                     console.log(error.code);
@@ -77,6 +79,12 @@ export default {
         },
         signInWithGoogle() {
 
+        },
+        async sendUserData() {
+            await setDoc(doc(db, 'users', this.userName), {
+                userName: this.userName,
+                email: this.email,
+            }, {merge: true})
         }
     }
 }

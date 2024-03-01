@@ -1,6 +1,6 @@
 <template>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Navbar</a>
+  <a class="navbar-brand" href="#">F1 Poule</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -9,19 +9,23 @@
       <li class="nav-item">
         <router-link class="nav-link" to="/">Home</router-link>
       </li>
+      <li class="nav-item">
+        <router-link class="nav-link" to="/standings">Standings</router-link>
+      </li>
       <li class="nav-item" v-if="isLoggedIn">
         <router-link class="nav-link" to="/feed">Feed</router-link>
       </li>
-      <li class="nav-item">
-        <router-link class="nav-link" to="/login">Login</router-link>
-      </li>
-      <li class="nav-item">
-        <router-link class="nav-link" to="/signup">Signup</router-link>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" @click="handleSignOut" v-if="isLoggedIn">Log out</button>
-      </li>
     </ul>
+  </div>
+  <!-- Log in and signin functionality to show left -->
+  <div class="nav-item p-2" v-if="!isLoggedIn">
+    <router-link class="nav-link" to="/login">Login</router-link>
+  </div>
+  <div class="nav-item p-2" v-if="!isLoggedIn">
+    <router-link class="nav-link" to="/signup">Signup</router-link>
+  </div>
+  <div class="nav-item p-2">
+    <button class="nav-link" @click="handleSignOut" v-if="isLoggedIn">Log out</button>
   </div>
 </nav>
   <div class="container">
