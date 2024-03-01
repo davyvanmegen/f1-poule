@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
 import Feed from '../views/Feed.vue'
+import Standings from '../views/Standings.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/feed',
     name: 'Feed',
     component: Feed
+  },
+  {
+    path: '/standings',
+    name: 'Standings',
+    component: Standings
   }
 ]
 

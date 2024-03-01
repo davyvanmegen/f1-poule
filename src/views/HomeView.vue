@@ -1,15 +1,15 @@
 <template>
-  <h1>Welkome bij de F1 poule</h1>
-  <!-- <ul>
-    <li :v-for="item in this.driversApi">
+  <h1>Welkom bij de F1 poule</h1>
+  <ul>
+    <li v-for="item in driversApi" :key="item.driverId">
       <h3>{{item.givenName}} {{item.familyName}}</h3>
       <p>Date of Birth: {{item.dateOfBirth}}</p>
       <a :href="item.url">Bio</a>
     </li>
-  </ul> -->
-  <div>
+  </ul>
+  <!-- <div>
     {{ this.driversApi[0] }}
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -28,9 +28,8 @@ export default {
     }
   },
   async mounted() {
-    const response = await axios.get('https://ergast.com/api/f1/2023/drivers.json');
-    this.driversApi = response.data.MRData.DriverTable.Drivers;
-    console.log(this.driversApi[1])
+    // const response = await axios.get('https://ergast.com/api/f1/2023/drivers.json');
+    // this.driversApi = response.data.MRData.DriverTable.Drivers;
     },
 }
 </script>

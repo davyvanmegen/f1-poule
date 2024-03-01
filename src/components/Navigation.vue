@@ -19,7 +19,7 @@
         <router-link class="nav-link" to="/signup">Signup</router-link>
       </li>
       <li class="nav-item">
-        <button class="nav-link" @click="handleSignOut">Log out</button>
+        <button class="nav-link" @click="handleSignOut" v-if="isLoggedIn">Log out</button>
       </li>
     </ul>
   </div>
@@ -28,6 +28,16 @@
 
 <script>
 export default {
+  data() {
+    return {
+
+    }
+  },
+  methods: {
+    handleSignOut() {
+
+    }
+  }
 
 }
 </script>
