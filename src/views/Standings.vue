@@ -15,11 +15,15 @@ import {query, doc, setDoc, collection, addDoc, getDocs} from 'firebase/firestor
 export default {
     data() {
         return {
-            users: []
+            users: [],
+            userData: [],
+            userArray: []
         }
     },
     mounted () {
             this.listAllUsers()
+            this.fetchAllCurrentUserData()
+
         },
     methods: {
         async listAllUsers() {
@@ -40,9 +44,20 @@ export default {
 
             //Loop over all user data
             const querySnap = await getDocs(query(collection(db, 'predictions')))
+            querySnap.forEach((doc) => {
+                this.userData.push(doc.data())
+                this.userArray.push(doc.id)
+            })
+            console.log(this.userData)
+            console.log(this.userArray)
+            this.computeCurrentResults()
         },
         computeCurrentResults() {
-
+            console.log('Hi')
+            for (var key in this.userData) {
+                console.log(this.userData[key])
+                
+            }
         }
     }
 
