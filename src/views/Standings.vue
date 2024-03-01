@@ -29,6 +29,20 @@ export default {
             querySnap.forEach((doc) => {
                 this.users.push(doc.data())
             })
+        },
+        async fetchAllCurrentF1Data() {
+
+            //Implement all code to get all data untill now and loop over all races
+            const response = await axios.get('https://ergast.com/api/f1/2023/{{round}}/results.json');
+            
+        },
+        async fetchAllCurrentUserData() {
+
+            //Loop over all user data
+            const querySnap = await getDocs(query(collection(db, 'predictions')))
+        },
+        computeCurrentResults() {
+
         }
     }
 

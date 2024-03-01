@@ -28,8 +28,8 @@ export default {
     }
   },
   async mounted() {
-    const response = await axios.get('https://ergast.com/api/f1/2023/drivers.json');
-    this.driversApi = response.data.MRData.DriverTable.Drivers;
+    // const response = await axios.get('https://ergast.com/api/f1/2023/drivers.json');
+    // this.driversApi = response.data.MRData.DriverTable.Drivers;
     },
 }
 </script>

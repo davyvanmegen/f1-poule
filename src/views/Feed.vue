@@ -73,6 +73,7 @@ export default {
         'Sargeant'
       ],
       testVal: null,
+      p1: 'position1'
     }
   },
   mounted() {
@@ -82,10 +83,12 @@ export default {
   methods: {
     async sendData() {
       await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
-        position1: this.pos1,
-        position2: this.pos2,
-        position3: this.pos3,
-        fastLab: this.fastestLap
+        [this.nextRace] : {
+          position1: this.pos1,
+          position2: this.pos2,
+          position3: this.pos3,
+          fastLab: this.fastestLap
+        }
       }, {merge: true})
     },
     displayCurrentUser() {
@@ -95,9 +98,9 @@ export default {
       }
     },
     async getNextRace() {
-      const response = await axios.get('https://ergast.com/api/f1/2024.json');
-      this.raceApi = response.data.MRData.RaceTable.Races[0];
-      console.log(this.raceApi)
+      // const response = await axios.get('https://ergast.com/api/f1/2024.json');
+      // this.raceApi = response.data.MRData.RaceTable.Races[0];
+      // console.log(this.raceApi)
       // const response2 = await axios.get('https://ergast.com/api/f1/current/driverStandings.json');
       // this.temp = response2.data;
       // //this.currentDriversStandings2 = this.temp.StandingsTable[0].StandingsLists[0].DriverStandings[0].Driver.familyName
