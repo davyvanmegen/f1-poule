@@ -4,7 +4,7 @@
         <div class="col-md-4 offset-md-0">
             <div>
             <div>
-                <h6>Prediction for {{raceApi.raceName}} --implement date to go to next race--:</h6>
+                <h6>Prediction for {{nextRace}}:</h6>
                 <hr />
             </div>
 
@@ -36,7 +36,7 @@
 import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
 import { doc, setDoc, collection, addDoc } from 'firebase/firestore'
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   data () {
@@ -46,7 +46,7 @@ export default {
       pos2: '',
       pos3: '',
       fastestLap: '',
-      nextRace: 'Netherlands',
+      nextRace: '',
       predictionArray: [],
       raceApi: '',
       currentDrivers: [
@@ -98,13 +98,9 @@ export default {
       }
     },
     async getNextRace() {
-      // const response = await axios.get('https://ergast.com/api/f1/2024.json');
-      // this.raceApi = response.data.MRData.RaceTable.Races[0];
-      // console.log(this.raceApi)
-      // const response2 = await axios.get('https://ergast.com/api/f1/current/driverStandings.json');
-      // this.temp = response2.data;
-      // //this.currentDriversStandings2 = this.temp.StandingsTable[0].StandingsLists[0].DriverStandings[0].Driver.familyName
-      // console.log(this.currentDriversStandings2)
+      const response = await axios.get('https://ergast.com/api/f1/2023/next.json');
+      this.nextRace = response.data.MRData.RaceTable.Races[0].raceName
+      console.log(this.nextRace)
     }
   }
 }
