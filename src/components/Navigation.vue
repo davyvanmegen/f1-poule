@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { auth } from '../firebase/init.js'
+import { signOut } from 'firebase/auth'
 export default {
   props: {
     isLoggedIn: false
