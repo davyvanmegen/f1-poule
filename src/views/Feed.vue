@@ -78,6 +78,7 @@ export default {
       p1: 'position1'
     }
   },
+
   mounted() {
     this.displayCurrentUser()
     this.getNextRace()
@@ -113,12 +114,12 @@ export default {
     },
     async getCurrentPredictions() {
       const querySnap = await getDocs(query(collection(db, 'predictions')));
-      const test = [];
+      const predictions = [];
       querySnap.forEach((doc) => {
-        test.push(doc.data());
+        predictions.push(doc.data());
       });
 
-      test.forEach((val) => {
+      predictions.forEach((val) => {
         if (val[this.nextRace.raceName].userName === this.displayName) {
           this.pos1 = val[this.nextRace.raceName].position1;
           this.pos2 = val[this.nextRace.raceName].position2;
