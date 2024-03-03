@@ -4,28 +4,28 @@
         <div class="col-md-4 offset-md-0">
             <div>
             <div>
-                <h6>Prediction for {{nextRace}}:</h6>
+                <h6>Prediction for {{nextRace.raceName}}:</h6>
                 <hr />
             </div>
 
             <label>First Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos1">
+            <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
             </select>
             <label>Second Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos2">
+            <select class="form-select" aria-label="Default select example" v-model="pos2" :disabled="isFormDisabled">
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
             </select>
             <label>Third Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos3">
+            <select class="form-select" aria-label="Default select example" v-model="pos3" :disabled="isFormDisabled">
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
             </select>
             <label>Fastest Lap</label>
-            <select class="form-select" aria-label="Default select example" v-model="fastestLap">
+            <select class="form-select" aria-label="Default select example" v-model="fastestLap" :disabled="isFormDisabled">
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
             </select>
             <div class="my-3">
-              <button type="submit" class="btn btn-primary" @click="sendData">Send prediction</button>
+              <button type="submit" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Send prediction</button>
             </div>
         </div>
         </div>
@@ -35,7 +35,7 @@
 <script>
 import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
-import { doc, setDoc, collection, addDoc } from 'firebase/firestore'
+import { doc, setDoc, getDocs, query, collection } from 'firebase/firestore'
 import axios from 'axios'
 
 export default {
@@ -46,7 +46,9 @@ export default {
       pos2: '',
       pos3: '',
       fastestLap: '',
-      nextRace: '',
+      nextRace: {},
+      isFormDisabled: false,
+      prediction: [],
       predictionArray: [],
       raceApi: '',
       currentDrivers: [
@@ -79,28 +81,51 @@ export default {
   mounted() {
     this.displayCurrentUser()
     this.getNextRace()
+    this.getCurrentPredictions()
   },
   methods: {
     async sendData() {
       await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
-        [this.nextRace] : {
+        [this.nextRace.raceName] : {
           position1: this.pos1,
           position2: this.pos2,
           position3: this.pos3,
-          fastLab: this.fastestLap
+          fastLab: this.fastestLap,
+          userName: auth.currentUser.displayName
         }
       }, {merge: true})
+
+      alert('bedankt voor je voorspelling')
     },
     displayCurrentUser() {
       if (auth.currentUser) {
-      // set local 'displayName' to user's displayName
-      this.displayName = auth.currentUser.displayName
+        this.displayName = auth.currentUser.displayName
       }
     },
     async getNextRace() {
-      const response = await axios.get('https://ergast.com/api/f1/2023/next.json');
-      this.nextRace = response.data.MRData.RaceTable.Races[0].raceName
-      console.log(this.nextRace);
+      const response = await axios.get('https://ergast.com/api/f1/2024/next.json');
+      this.nextRace = response.data.MRData.RaceTable.Races[0];
+
+      const newDate = new Date(this.nextRace.date);
+      const currentDate = new Date();
+
+      this.isFormDisabled = (newDate === currentDate);
+    },
+    async getCurrentPredictions() {
+      const querySnap = await getDocs(query(collection(db, 'predictions')));
+      const test = [];
+      querySnap.forEach((doc) => {
+        test.push(doc.data());
+      });
+
+      test.forEach((val) => {
+        if (val[this.nextRace.raceName].userName === this.displayName) {
+          this.pos1 = val[this.nextRace.raceName].position1;
+          this.pos2 = val[this.nextRace.raceName].position2;
+          this.pos3 = val[this.nextRace.raceName].position3
+          this.fastestLap = val[this.nextRace.raceName].fastLab;
+        }
+      });
     }
   }
 }
