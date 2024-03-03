@@ -51,7 +51,7 @@ export default {
       raceApi: '',
       currentDrivers: [
         'Verstappen',
-        'Perez',
+        'Pérez',
         'Hamilton',
         'Alonso',
         'Leclerc',

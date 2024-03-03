@@ -2,7 +2,7 @@
   <h2>Standings</h2>
   <ul>
     <li v-for="(item, index) in users" :key="index">
-      <h5>{{item.userName}}</h5>
+      <h5>{{item.userName}} - {{ userPoints[index] }}</h5>
     </li>
   </ul>
 </template>
@@ -78,26 +78,38 @@ export default {
         },
         computeCurrentResults() {
             for (var key in this.userArray) {
-                const points = 0
-                for (var key2 in this.userData) {
-                    const user = this.userData[key2][Object.keys(this.userData[key2])]
+                let points = 0
+                console.log(this.userArray[key])
+                for (var key2 in this.apiData) {
+                    const user = this.userData[key][Object.keys(this.apiData[key2])]
                     const api = this.apiData[key2][Object.keys(this.apiData[key2])]
-                    if (user.position1 == api.position1) {
-                        points = points + 3
-                    }
-                    if (user.position2 == api.position2) {
-                        points = points + 3
-                    }
-                    if (user.position3 == api.position3) {
-                        points = points + 3
-                    }
+
+                    console.log(Object.keys(this.apiData[key2]))
+
+                    console.log(user)
+                    console.log(api)
+                    
+                    if (user){
+                        if (user.position1 == api.position1) {
+                            points = points + 3
+                            console.log('pos 1 correct')
+                        }
+                        if (user.position2 == api.position2) {
+                            points = points + 3
+                            console.log('pos 2 correct')
+                        }
+                        if (user.position3 == api.position3) {
+                            points = points + 3
+                            console.log('pos 3 correct')
+                        }
+                    }  
                 }
-                this.userPoints[key][user] = 5
+                this.userPoints[key] = points
                 console.log(this.userPoints)
+                console.log(this.userArray)
             }
         }
     }
-
 }
 </script>
 
