@@ -98,13 +98,13 @@ export default {
       }
     },
     async getNextRace() {
-      // const response = await axios.get('https://ergast.com/api/f1/2024.json');
-      // this.raceApi = response.data.MRData.RaceTable.Races[0];
-      // console.log(this.raceApi)
-      // const response2 = await axios.get('https://ergast.com/api/f1/current/driverStandings.json');
-      // this.temp = response2.data;
-      // //this.currentDriversStandings2 = this.temp.StandingsTable[0].StandingsLists[0].DriverStandings[0].Driver.familyName
-      // console.log(this.currentDriversStandings2)
+      const response = await axios.get('https://ergast.com/api/f1/2024.json');
+      this.raceApi = response.data.MRData.RaceTable.Races;
+      console.log(this.raceApi)
+      const response2 = await axios.get('https://ergast.com/api/f1/current/driverStandings.json');
+      this.temp = response2.data;
+      //this.currentDriversStandings2 = this.temp.StandingsTable[0].StandingsLists[0].DriverStandings[0].Driver.familyName
+      console.log(this.currentDriversStandings2)
     }
   }
 }
