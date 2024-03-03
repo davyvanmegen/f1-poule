@@ -32,11 +32,6 @@ export default {
     }
   },
   methods: {
-    handleSignOut() {
-      signOut(auth).then(() => {
-        this.$router.push("/")
-      })
-    }
   }
 }
 </script>
