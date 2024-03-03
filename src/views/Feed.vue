@@ -100,7 +100,7 @@ export default {
     async getNextRace() {
       const response = await axios.get('https://ergast.com/api/f1/2023/next.json');
       this.nextRace = response.data.MRData.RaceTable.Races[0].raceName
-      console.log(this.nextRace)
+      console.log(this.nextRace);
     }
   }
 }
