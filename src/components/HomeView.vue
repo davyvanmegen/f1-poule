@@ -1,6 +1,7 @@
 <template>
   <h1>Welkom bij de F1 poule</h1>
   <hr>
+  <p>Voor het maken van een voorspelling, log dan in. Heb je nog geen account, ga naar sign up.</p>
   <!-- <div class="card">
     <h5 class="card-header">Zelf een voorspelling maken?</h5>
     <div class="card-body">
