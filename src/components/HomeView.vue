@@ -1,14 +1,14 @@
 <template>
   <h1>Welkom bij de F1 poule</h1>
   <hr>
-  <div class="card">
+  <!-- <div class="card">
     <h5 class="card-header">Zelf een voorspelling maken?</h5>
     <div class="card-body">
       <p class="card-text">Klink dan op de onderstaande knop</p>
       <router-link class="btn btn-primary" to="/feed">Maak een voorspelling</router-link>
     </div>
   </div>
-  <hr>
+  <hr> -->
   <div class="display-flex">
     <div class="card-container" v-for="item in driversApi" :key="item.driverId">
       <DriverCard :driverInfo="item" />
