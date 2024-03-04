@@ -6,6 +6,7 @@
             <h6 class="card-subtitle mb-2 text-muted">Nr: {{ driverInfo.position }}</h6>
             <p>Points: {{ driverInfo.points }} <br>Wins: {{ driverInfo.wins }}</p>
             <a :href="driverInfo.Driver.url" target="_blank" class="card-link">Biografie</a>
+            
         </div>
     </div>
 </template>
