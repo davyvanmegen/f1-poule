@@ -4,6 +4,7 @@ import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
 import Feed from '../views/Feed.vue'
 import Standings from '../views/Standings.vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const routes = [
   {
@@ -19,12 +20,15 @@ const routes = [
   {
     path: '/signup',
     name: 'Signup',
-    component: Signup
+    component: Signup,
   },
   {
     path: '/feed',
     name: 'Feed',
-    component: Feed
+    component: Feed,
+    meta: {
+      requiresAuth: true,
+    }
   },
   {
     path: '/standings',
@@ -37,5 +41,31 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
+
+const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const removeListener = onAuthStateChanged(
+      getAuth(),
+        (user) => {
+          removeListener();
+          resolve(user);
+        },
+      reject
+    )
+  })
+}
+
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (await getCurrentUser()) {
+      next()
+    } else {
+      alert("You dont have access, you need to be signed in!")
+      next("/")
+    }
+  } else {
+    next()
+  }
+});
 
 export default router
