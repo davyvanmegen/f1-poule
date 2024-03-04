@@ -31,6 +31,7 @@
                     <button type="submit" class="btn btn-secondary" @click="signInWithGoogle">Sign in with google</button>
                 </div>
             </form>
+            <p>Heb je al een account? Log dan <router-link class="href" to="/login">hier</router-link> in.</p>
         </div>
         </div>
     </div>

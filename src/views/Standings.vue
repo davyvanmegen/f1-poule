@@ -48,11 +48,15 @@ export default {
                 this.pos1 = response.data.MRData.RaceTable.Races[0].Results[0].Driver.familyName
                 this.pos2 = response.data.MRData.RaceTable.Races[0].Results[1].Driver.familyName
                 this.pos3 = response.data.MRData.RaceTable.Races[0].Results[2].Driver.familyName
+                this.pos4 = response.data.MRData.RaceTable.Races[0].Results[3].Driver.familyName
+                this.pos5 = response.data.MRData.RaceTable.Races[0].Results[4].Driver.familyName
                 const race = {
                     [currentRace] : {
                         position1: this.pos1,
                         position2: this.pos2,
                         position3: this.pos3,
+                        position4: this.pos4,
+                        position5: this.pos5,
                         fastLab: ''
                 }};
                 this.apiData.push(race) ;
@@ -88,6 +92,12 @@ export default {
                             points = points + 3;
                         }
                         if (user.position3 == api.position3) {
+                            points = points + 3;
+                        }
+                        if (user.position4 == api.position4) {
+                            points = points + 3;
+                        }
+                        if (user.position5 == api.position5) {
                             points = points + 3;
                         }
                     }  

@@ -1,7 +1,7 @@
 <template>
   <Navigation :isLoggedIn="isLoggedIn"></Navigation>
   <div class="container margin-top">
-      <router-view/>
+      <router-view :isLoggedIn="isLoggedIn"/>
   </div>
 </template>
 

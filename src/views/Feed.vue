@@ -20,6 +20,14 @@
             <select class="form-select" aria-label="Default select example" v-model="pos3" :disabled="isFormDisabled">
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
             </select>
+            <label>Fourth Place</label>
+            <select class="form-select" aria-label="Default select example" v-model="pos4" :disabled="isFormDisabled">
+              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
+            </select>
+            <label>Fifth Place</label>
+            <select class="form-select" aria-label="Default select example" v-model="pos5" :disabled="isFormDisabled">
+              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
+            </select>
             <label>Fastest Lap</label>
             <select class="form-select" aria-label="Default select example" v-model="fastestLap" :disabled="isFormDisabled">
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
@@ -45,6 +53,8 @@ export default {
       pos1: '',
       pos2: '',
       pos3: '',
+      pos4: '',
+      pos5: '',
       fastestLap: '',
       nextRace: {},
       isFormDisabled: false,
@@ -91,6 +101,8 @@ export default {
           position1: this.pos1,
           position2: this.pos2,
           position3: this.pos3,
+          position4: this.pos4,
+          position5: this.pos5,
           fastLab: this.fastestLap,
           userName: auth.currentUser.displayName
         }
@@ -123,7 +135,9 @@ export default {
         if (val[this.nextRace.raceName].userName === this.displayName) {
           this.pos1 = val[this.nextRace.raceName].position1;
           this.pos2 = val[this.nextRace.raceName].position2;
-          this.pos3 = val[this.nextRace.raceName].position3
+          this.pos3 = val[this.nextRace.raceName].position3;
+          this.pos4 = val[this.nextRace.raceName].position4;
+          this.pos5 = val[this.nextRace.raceName].position5;
           this.fastestLap = val[this.nextRace.raceName].fastLab;
         }
       });

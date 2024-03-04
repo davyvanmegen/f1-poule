@@ -19,9 +19,12 @@
                 <div class="my-3">
                     <button type="submit" class="btn btn-primary" @click="login">Login</button>
                 </div>
-                <div class="my-3">
+
+                <p>Nog geen account? Maak dan <router-link class="href" to="/signup">hier</router-link> een account aan</p>
+
+                <!-- <div class="my-3">
                     <button type="submit" class="btn btn-secondary" @click="signInWithGoogle">Login with google</button>
-                </div>
+                </div> -->
             </form>
         </div>
         </div>
