@@ -1,10 +1,54 @@
 <template>
-  <h2>Standings</h2>
-  <ul>
-    <li v-for="(item, index) in users" :key="index">
-      <h5>{{item.userName}} - {{ userPoints[index] }}</h5>
-    </li>
-  </ul>
+    <h2>Standings</h2>
+    <!-- <table class="table">
+        <thead class="table-light">
+            <tr>
+            <th scope="col">Pos</th>
+            <th scope="col">Name</th>
+            <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody v-for="(item, index) in users" :key="index">
+            <tr>
+            <th scope="row">{{ index+1 }}</th>
+            <td>{{item.userName}}</td>
+            <td>{{ userPoints[index] }}</td>
+            </tr>
+        </tbody>
+    </table> -->
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+            <th scope="col">Pos</th>
+            <th scope="col">Name</th>
+            <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody v-for="(item, index) in userPoints2" :key="index">
+            <tr>
+            <th scope="row">{{ index+1 }}</th>
+            <td>{{ item.name }}</td>
+            <td>{{ item.value }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <table class="table">
+        <thead class="table-light">
+            <tr>
+            <th scope="col">Pos</th>
+            <th scope="col">Name</th>
+            <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody v-for="(item, index) in test" :key="index">
+            <tr>
+            <th scope="row">{{ index+1 }}</th>
+            <td>{{ item.name }}</td>
+            <td>{{ item.value }}</td>
+            </tr>
+        </tbody>
+    </table> -->
+
 </template>
 
 <script>
@@ -20,7 +64,9 @@ export default {
             userData: [],
             userArray: [],
             apiData: [],
-            userPoints: []
+            userPoints: [],
+            test: [{name: "Davy", value: 0},{name: "Erida", value: 5},{name: "Sem", value: 4}],
+            userPoints2: []
         }
     },
     mounted () {
@@ -102,8 +148,16 @@ export default {
                         }
                     }  
                 }
+                //Add up all points
                 this.userPoints[key] = points;
+                this.userPoints2[key] = {name: this.userArray[key], value: points}
+
             }
+            // Sort the arrays
+            this.userPoints2.sort((a, b) => a.value - b.value).reverse()
+            this.test.sort((a, b) => a.value - b.value).reverse();
+
+            
         }
     }
 }
