@@ -71,7 +71,7 @@ export default {
         register() {
 
             const checkUsername = obj => obj.userName === this.userName;
-            if (!(this.users.some(checkUsername)))
+            if (!(this.users.some(checkUsername))) 
                 // need .value because ref()
                 if (this.password1==this.password2) {
                     console.log(this.email)

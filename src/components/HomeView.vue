@@ -15,7 +15,7 @@
   <div class="card">
     <h5 class="card-header">Zelf een voorspelling maken?</h5>
     <div class="card-body">
-      <p class="card-text">Klink dan op de onderstaande knop</p>
+      <p class="card-text">Klik dan op de onderstaande knop</p>
       <router-link class="btn btn-primary" v-if="isLoggedIn" to="/feed">Maak een voorspelling</router-link>
       <router-link class="btn btn-primary" v-if="!isLoggedIn" to="/login">Maak een voorspelling</router-link>
     </div>

@@ -4,7 +4,7 @@
         <div class="col-md-4 offset-md-0">
             <div>
             <div>
-                <h6>Prediction for {{nextRace.raceName}}:</h6>
+                <h6>Send your prediction for {{nextRace.raceName}}:</h6>
                 <hr />
             </div>
 
@@ -38,6 +38,23 @@
         </div>
         </div>
     </div>
+    <h4>Prediction of others for the {{nextRace.raceName}}: </h4>
+    <hr />
+    <div class="display-flex">
+    <div class="card-container" v-for="item in userNextPredictions" :key="item.value">
+      <div class="card" style="max-width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ item.userName }}</h5>
+            <p>First: {{ item.position1 }}</p>
+            <p>Second: {{ item.position2 }}</p>
+            <p>Third: {{ item.position3 }}</p>
+            <p>Fourth: {{ item.position4 }}</p>
+            <p>Fifth: {{ item.position5 }}</p>
+            <p>Fastest Lap: {{ item.fastLab }}</p>
+        </div>
+    </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -85,7 +102,10 @@ export default {
         'Sargeant'
       ],
       testVal: null,
-      p1: 'position1'
+      p1: 'position1',
+      userData: [],
+      userArray: [],
+      userNextPredictions: []
     }
   },
 
@@ -93,8 +113,22 @@ export default {
     this.displayCurrentUser()
     this.getNextRace()
     this.getCurrentPredictions()
+    this.fetchAllCurrentUserData()
   },
   methods: {
+    async fetchAllCurrentUserData() {
+      //Loop over all user data
+      const querySnap = await getDocs(query(collection(db, 'predictions')));
+      querySnap.forEach((doc) => {
+          this.userData.push(doc.data());
+          this.userArray.push(doc.id);
+      });
+      this.userData.forEach((data) => {
+        console.log(data[this.nextRace.raceName].userName)
+        this.userNextPredictions.push(data[this.nextRace.raceName])
+      })
+      //console.log(this.userData)
+    },
     async sendData() {
       await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
         [this.nextRace.raceName] : {

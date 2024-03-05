@@ -122,6 +122,7 @@ export default {
                 this.userPoints.push(pointsObj);
             });
             this.computeCurrentResults();
+            console.log(this.userData)
         },
         computeCurrentResults() {
             for (var key in this.userArray) {
