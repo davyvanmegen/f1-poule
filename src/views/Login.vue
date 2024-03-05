@@ -15,7 +15,7 @@
                     <label>Password</label>
                     <input type="password" class="form-control" v-model="password"/>
                 </div>
-                <p v-if="errMsg">{{ errMsg }}</p>
+                <p class="errMsg" v-if="errMsg">{{ errMsg }}</p>
                 <div class="my-3">
                     <button type="submit" class="btn btn-primary" @click="login">Login</button>
                 </div>
@@ -84,5 +84,7 @@ export default {
 </script>
 
 <style>
-
+.errMsg {
+    color: red;
+}
 </style>
