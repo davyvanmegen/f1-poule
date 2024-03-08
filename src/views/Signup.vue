@@ -25,7 +25,7 @@
                 </div>
                 <p class="errMsg" v-if="errMsg">{{ errMsg }}</p>
                 <div class="my-3">
-                    <button type="submit" class="btn btn-primary" @click="register">Signup</button>
+                    <button type="button" class="btn btn-primary" @click="register">Signup</button>
                 </div>
                 <!-- <div class="my-3">
                     <button type="submit" class="btn btn-secondary" @click="signInWithGoogle">Sign in with google</button>
@@ -83,8 +83,9 @@ export default {
                             updateProfile(auth.currentUser, {
                                 displayName: this.userName
                             })
-                            this.$router.push('/feed')
                             this.sendUserData()
+                            this.$router.push('/feed')
+                            
                         })
                         .catch((error) => {
                             console.log(error.code);
