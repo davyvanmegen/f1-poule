@@ -33,7 +33,7 @@
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
             </select>
             <div class="my-3">
-              <button type="submit" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Send prediction</button>
+              <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Send prediction</button>
             </div>
         </div>
         </div>
@@ -124,12 +124,13 @@ export default {
           this.userArray.push(doc.id);
       });
       this.userData.forEach((data) => {
-        console.log(data[this.nextRace.raceName].userName)
+        // console.log(data[this.nextRace.raceName].userName)
         this.userNextPredictions.push(data[this.nextRace.raceName])
       })
       //console.log(this.userData)
     },
     async sendData() {
+      alert('Bedankt voor je voorspelling!')
       await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
         [this.nextRace.raceName] : {
           position1: this.pos1,
@@ -141,8 +142,7 @@ export default {
           userName: auth.currentUser.displayName
         }
       }, {merge: true})
-
-      alert('bedankt voor je voorspelling')
+      window.location.reload()
     },
     displayCurrentUser() {
       if (auth.currentUser) {

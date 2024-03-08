@@ -23,11 +23,16 @@
   <br>
   <h3>De actuele stand in het WK:</h3>
   <hr>
-  <div class="display-flex">
-    <div class="card-container" v-for="item in driversApi" :key="item.driverId">
-      <DriverCard :driverInfo="item" />
-    </div>
-  </div>
+
+  <Suspense>
+    <template #default>
+      <DriverCard/>
+    </template>
+    <template #fallback>
+      <UserCardSkeleton></UserCardSkeleton>
+    </template>
+  </Suspense>
+
 </template>
 
 <script>
@@ -35,6 +40,7 @@
 import HelloWorld from '@/components/HelloWorld.vue'
 import DriverCard from './DriverCard.vue';
 import axios from 'axios';
+import UserCardSkeleton from './UserCardSkeleton.vue'
 
 export default {
   props: {
@@ -43,7 +49,8 @@ export default {
   name: 'HomeView',
   components: {
     HelloWorld,
-    DriverCard
+    DriverCard,
+    UserCardSkeleton
   },
   data() {
     return {

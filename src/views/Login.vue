@@ -17,7 +17,7 @@
                 </div>
                 <p class="errMsg" v-if="errMsg">{{ errMsg }}</p>
                 <div class="my-3">
-                    <button type="submit" class="btn btn-primary" @click="login">Login</button>
+                    <button type="button" class="btn btn-primary" @click="login">Login</button>
                 </div>
 
                 <p>Nog geen account? Maak dan <router-link class="href" to="/signup">hier</router-link> een account aan</p>
