@@ -23,13 +23,12 @@
   <br>
   <h3>De actuele stand in het WK:</h3>
   <hr>
-
   <Suspense>
     <template #default>
       <DriverCard/>
     </template>
     <template #fallback>
-      <UserCardSkeleton></UserCardSkeleton>
+      <UserCardSkeleton/>
     </template>
   </Suspense>
 

@@ -3,7 +3,7 @@
         <div class="card-container" v-for="item in driversApi" :key="item.driverId">
             <div class="card mb-3" v-if="item" style="max-width: 540px;">
                 <div class="row no-gutters">
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <img :src="'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/'+item.Driver.givenName.slice(0, 1).toUpperCase() +'/'+ item.Driver.givenName.slice(0, 3).toUpperCase() + item.Driver.familyName.slice(0,3).toUpperCase()+'01_'+ item.Driver.givenName +'_' +item.Driver.familyName+'/'+ item.Driver.givenName.slice(0, 3).toLowerCase() + item.Driver.familyName.slice(0,3).toLowerCase()+'01.png.transform/2col/image.png'" alt="" style="max-width: 150px;">
                     </div>
                     <div class="col-md-6">
@@ -22,8 +22,22 @@
     </div>
 
 </template>
-
 <script>
+import UserCardSkeleton from './UserCardSkeleton.vue';
+import axios from 'axios';
+export default {
+    async setup() {
+        const response = await axios.get('https://ergast.com/api/f1/2024/driverStandings.json');
+        const driversApi = response.data.MRData.StandingsTable.StandingsLists[response.data.MRData.StandingsTable.StandingsLists.length - 1].DriverStandings;
+        return { driversApi }
+    }
+}
+
+</script>
+
+
+
+<!-- <script>
 import UserCardSkeleton from './UserCardSkeleton.vue';
 import axios from 'axios';
 
@@ -43,7 +57,7 @@ export default {
         console.log(this.driversApi)
   },
 }
-</script>
+</script> -->
 
 <style>
 .img-f1-drivers {
