@@ -130,7 +130,6 @@ export default {
       //console.log(this.userData)
     },
     async sendData() {
-      alert('Bedankt voor je voorspelling!')
       await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
         [this.nextRace.raceName] : {
           position1: this.pos1,
@@ -142,6 +141,7 @@ export default {
           userName: auth.currentUser.displayName
         }
       }, {merge: true})
+      alert('Bedankt voor je voorspelling!')
       window.location.reload()
     },
     displayCurrentUser() {
