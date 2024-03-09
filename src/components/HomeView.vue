@@ -7,7 +7,10 @@
       <p class="card-text">
         Doe mee en verdien punten door te voorspellen welke 5 coureurs als eerste over de streep komen, 
         en voorspel wie de snelste ronde rijdt. Voor elke goedgekozen coureur op de goede plaats verdien
-        je 3 punten, en voor de snelste race ronde verdien je 5 punten. Veel plezier!
+        je 3 punten plus correctie punten, en voor de snelste race ronde verdien je 5 punten. De correctie
+        punten worden bepaald aan de hand van hoe gewaagd jou voorspelling is. Bijvoorbeeld, voorspel je 
+        dat een coureur op plek 1 eindigd, maar hij staat in het kampioenschap op plaats 10, dan krijg je
+        het verschil als extra punten, in dit geval dus 9 extra punten. Veel plezier!
       </p>
     </div>
   </div>
