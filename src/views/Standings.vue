@@ -71,7 +71,6 @@ export default {
                     }
                 }
 
-                console.log(this.currentStandingsArray.findIndex(x => x == 'Verstappen'))
                 this.pos1 = response.data.MRData.RaceTable.Races[0].Results[0].Driver.familyName
                 this.pos2 = response.data.MRData.RaceTable.Races[0].Results[1].Driver.familyName
                 this.pos3 = response.data.MRData.RaceTable.Races[0].Results[2].Driver.familyName
