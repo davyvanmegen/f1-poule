@@ -7,7 +7,9 @@
                 <h6>Send your prediction for {{nextRace.raceName}}:</h6>
                 <hr />
             </div>
-
+            <div v-if="isFormDisabled" class="alert alert-warning" role="alert">
+              <p>You can not give and/or change your prediction anymore for {{nextRace.raceName}}. Come back tomorrow to give your prediction for next race. </p>
+            </div>
             <label>First Place</label>
             <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
               <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
@@ -105,7 +107,9 @@ export default {
       p1: 'position1',
       userData: [],
       userArray: [],
-      userNextPredictions: []
+      userNextPredictions: [],
+      nextRaceDate: '',
+      currentDate: ''
     }
   },
 
@@ -130,19 +134,21 @@ export default {
       //console.log(this.userData)
     },
     async sendData() {
-      await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
-        [this.nextRace.raceName] : {
-          position1: this.pos1,
-          position2: this.pos2,
-          position3: this.pos3,
-          position4: this.pos4,
-          position5: this.pos5,
-          fastLab: this.fastestLap,
-          userName: auth.currentUser.displayName
-        }
-      }, {merge: true})
-      alert('Bedankt voor je voorspelling!')
-      window.location.reload()
+      if (this.newDate !== this.currentDate) {
+        await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
+          [this.nextRace.raceName] : {
+            position1: this.pos1,
+            position2: this.pos2,
+            position3: this.pos3,
+            position4: this.pos4,
+            position5: this.pos5,
+            fastLab: this.fastestLap,
+            userName: auth.currentUser.displayName
+          }
+        }, {merge: true})
+        alert('Bedankt voor je voorspelling!')
+        window.location.reload()
+      } else {alert(`You are too late to give and/or change your prediction for${this.nextRace}. Come back tomorrow to give your prediction for the next race.`)}
     },
     displayCurrentUser() {
       if (auth.currentUser) {
@@ -153,10 +159,10 @@ export default {
       const response = await axios.get('https://ergast.com/api/f1/2024/next.json');
       this.nextRace = response.data.MRData.RaceTable.Races[0];
 
-      const newDate = new Date(this.nextRace.date);
-      const currentDate = new Date();
+      this.nextRaceDate = new Date(this.nextRace.date).toISOString().split('T')[0];
+      this.currentDate = new Date().toISOString().split('T')[0];
 
-      this.isFormDisabled = (newDate === currentDate);
+      this.isFormDisabled = (this.nextRaceDate === this.currentDate);
     },
     async getCurrentPredictions() {
       const querySnap = await getDocs(query(collection(db, 'predictions')));
