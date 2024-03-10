@@ -42,7 +42,7 @@ export default {
     mounted () {
             this.listAllUsers()
             this.fetchAllCurrentF1Data()
-            
+            this.fetchAllCurrentUserData()
 
         },
     methods: {
@@ -93,7 +93,6 @@ export default {
                 }};
                 this.apiData.push(race) ;
             }
-            this.fetchAllCurrentUserData()
             
             
         },
