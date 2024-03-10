@@ -1,21 +1,6 @@
 <template>
     <h2>Standings</h2>
-    <!-- <table class="table">
-        <thead class="table-light">
-            <tr>
-            <th scope="col">Pos</th>
-            <th scope="col">Name</th>
-            <th scope="col">Points</th>
-            </tr>
-        </thead>
-        <tbody v-for="(item, index) in users" :key="index">
-            <tr>
-            <th scope="row">{{ index+1 }}</th>
-            <td>{{item.userName}}</td>
-            <td>{{ userPoints[index] }}</td>
-            </tr>
-        </tbody>
-    </table> -->
+
     <table class="table">
         <thead class="table-light">
             <tr>
@@ -32,22 +17,6 @@
             </tr>
         </tbody>
     </table>
-    <!-- <table class="table">
-        <thead class="table-light">
-            <tr>
-            <th scope="col">Pos</th>
-            <th scope="col">Name</th>
-            <th scope="col">Points</th>
-            </tr>
-        </thead>
-        <tbody v-for="(item, index) in test" :key="index">
-            <tr>
-            <th scope="row">{{ index+1 }}</th>
-            <td>{{ item.name }}</td>
-            <td>{{ item.value }}</td>
-            </tr>
-        </tbody>
-    </table> -->
 
 </template>
 
@@ -66,7 +35,8 @@ export default {
             apiData: [],
             userPoints: [],
             test: [{name: "Davy", value: 0},{name: "Erida", value: 5},{name: "Sem", value: 4}],
-            userPoints2: []
+            userPoints2: [],
+            currentStandingsArray: []
         }
     },
     mounted () {
@@ -90,13 +60,26 @@ export default {
             //Implement all code to get all data untill now and loop over all races
             for (let i = 0; i < raceNumber; i++) {
                 const response = await axios.get(`https://ergast.com/api/f1/2024/${i}/results.json`)
-                const lastInArray = response.data.MRData.RaceTable.Races.length -1;
-                const currentRace = response.data.MRData.RaceTable.Races[lastInArray].raceName
+                const lastInArray = response.data.MRData.RaceTable.Races.length -1;                
+                const currentRace = response.data.MRData.RaceTable.Races[0].raceName
+                const obj = response.data.MRData.RaceTable.Races[0].Results.find((item)=>{return item.FastestLap.rank==='1'})
+
+                if (i!==0) {
+                    const response2 = await axios.get(`http://ergast.com/api/f1/2024/${i}/driverStandings.json`)
+                    const currentStandings = response2.data.MRData.StandingsTable.StandingsLists[0].DriverStandings
+                    for (let i =0; i < currentStandings.length; i++) {
+                        this.currentStandingsArray.push(currentStandings[i].Driver.familyName)
+                    }
+                }
+
                 this.pos1 = response.data.MRData.RaceTable.Races[lastInArray].Results[0].Driver.familyName
                 this.pos2 = response.data.MRData.RaceTable.Races[lastInArray].Results[1].Driver.familyName
                 this.pos3 = response.data.MRData.RaceTable.Races[lastInArray].Results[2].Driver.familyName
                 this.pos4 = response.data.MRData.RaceTable.Races[lastInArray].Results[3].Driver.familyName
                 this.pos5 = response.data.MRData.RaceTable.Races[lastInArray].Results[4].Driver.familyName
+                this.fastestLap = obj.Driver.familyName
+
+
                 const race = {
                     [currentRace] : {
                         position1: this.pos1,
@@ -104,7 +87,9 @@ export default {
                         position3: this.pos3,
                         position4: this.pos4,
                         position5: this.pos5,
-                        fastLab: ''
+                        fastLab: this.fastestLap,
+                        currentStandings: this.currentStandingsArray
+
                 }};
                 this.apiData.push(race) ;
             }
@@ -134,19 +119,27 @@ export default {
                     
                     if (user){
                         if (user.position1 == api.position1) {
-                            points = points + 3;
+                           correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 1
+                            points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position2 == api.position2) {
-                            points = points + 3;
+                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 2
+                            points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position3 == api.position3) {
-                            points = points + 3;
+                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 3
+                            points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position4 == api.position4) {
-                            points = points + 3;
+                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 4
+                            points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position5 == api.position5) {
-                            points = points + 3;
+                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 5
+                            points = points + 3 + Math.abs(correctionPoints);
+                        }
+                        if (user.fastLab == api.fastLap) {
+                            points = points + 5;
                         }
                     }  
                 }

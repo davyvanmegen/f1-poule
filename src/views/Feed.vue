@@ -136,7 +136,7 @@ export default {
       //console.log(this.userData)
     },
     async sendData() {
-      if (this.newDate !== this.currentDate) {
+      if (this.nextRaceDate !== this.currentDate) {
         // await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
         await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
           [this.nextRace.raceName]: {
