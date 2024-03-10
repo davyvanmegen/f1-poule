@@ -113,29 +113,59 @@ export default {
             // console.log(this.apiData)
             for (var key in this.userArray) {
                 let points = 0;
+
                 for (var key2 in this.apiData) {
                     const user = this.userData[key][Object.keys(this.apiData[key2])];
                     const api = this.apiData[key2][Object.keys(this.apiData[key2])];
                     
                     if (user){
+                        // for (var key in api) {
+                        //     if (Object.values(user).indexOf(api[key])) {
+                        //         points = points + 1
+                        //         console.log('test')
+                        //     }
+                        // }
+                        // console.log(user.userName)
+                        // if (Object.values(user).indexOf(api.position1)) {
+                            
+                        //     console.log(api.position1)
+                        //     points = points + 1
+                        //     console.log('Pos1')
+                        // }
+                        // if (Object.values(user).indexOf(api.position2)) {
+                        //     points = points + 1
+                        //     console.log('Pos2')
+                        // }
+                        // if (Object.values(user).indexOf(api.position3)) {
+                        //     points = points + 1
+                        //     console.log('Pos3')
+                        // }
+                        // if (Object.values(user).indexOf(api.position4)) {
+                        //     points = points + 1
+                        //     console.log('Pos4')
+                        // }
+                        // if (Object.values(user).indexOf(api.position5)) {
+                        //     points = points + 1
+                        //     console.log('Pos5')
+                        // }
                         if (user.position1 == api.position1) {
                             const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 1
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position2 == api.position2) {
-                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 2
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position2) + 1) - 2
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position3 == api.position3) {
-                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 3
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position3) + 1) - 3
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position4 == api.position4) {
-                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 4
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position4) + 1) - 4
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position5 == api.position5) {
-                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 5
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position5) + 1) - 5
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.fastLab == api.fastLap) {
