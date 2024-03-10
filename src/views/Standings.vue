@@ -60,8 +60,9 @@ export default {
             //Implement all code to get all data untill now and loop over all races
             for (let i = 0; i < raceNumber; i++) {
                 const response = await axios.get(`https://ergast.com/api/f1/2024/${i}/results.json`)
-                const currentRace = response.data.MRData.RaceTable.Races[0].raceName
-                const obj = response.data.MRData.RaceTable.Races[0].Results.find((item)=>{return item.FastestLap.rank==='1'})
+                const lastInArray = response.data.MRData.RaceTable.Races.length -1;                
+                const currentRace = response.data.MRData.RaceTable.Races[lastInArray].raceName
+                const obj = response.data.MRData.RaceTable.Races[lastInArray].Results.find((item)=>{return item.FastestLap.rank==='1'})
 
                 if (i!==0) {
                     const response2 = await axios.get(`http://ergast.com/api/f1/2024/${i}/driverStandings.json`)
@@ -71,11 +72,11 @@ export default {
                     }
                 }
 
-                this.pos1 = response.data.MRData.RaceTable.Races[0].Results[0].Driver.familyName
-                this.pos2 = response.data.MRData.RaceTable.Races[0].Results[1].Driver.familyName
-                this.pos3 = response.data.MRData.RaceTable.Races[0].Results[2].Driver.familyName
-                this.pos4 = response.data.MRData.RaceTable.Races[0].Results[3].Driver.familyName
-                this.pos5 = response.data.MRData.RaceTable.Races[0].Results[4].Driver.familyName
+                this.pos1 = response.data.MRData.RaceTable.Races[lastInArray].Results[0].Driver.familyName
+                this.pos2 = response.data.MRData.RaceTable.Races[lastInArray].Results[1].Driver.familyName
+                this.pos3 = response.data.MRData.RaceTable.Races[lastInArray].Results[2].Driver.familyName
+                this.pos4 = response.data.MRData.RaceTable.Races[lastInArray].Results[3].Driver.familyName
+                this.pos5 = response.data.MRData.RaceTable.Races[lastInArray].Results[4].Driver.familyName
                 this.fastestLap = obj.Driver.familyName
 
 
@@ -109,6 +110,7 @@ export default {
             this.computeCurrentResults();
         },
         computeCurrentResults() {
+            // console.log(this.apiData)
             for (var key in this.userArray) {
                 let points = 0;
                 for (var key2 in this.apiData) {
@@ -117,23 +119,23 @@ export default {
                     
                     if (user){
                         if (user.position1 == api.position1) {
-                           correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 1
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 1
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position2 == api.position2) {
-                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 2
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 2
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position3 == api.position3) {
-                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 3
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 3
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position4 == api.position4) {
-                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 4
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 4
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.position5 == api.position5) {
-                            correctionPoints = ( api.currentStandingsArray.findIndex(x => x == api.position1) + 1) - 5
+                            const correctionPoints = ( api.currentStandings.findIndex(x => x == api.position1) + 1) - 5
                             points = points + 3 + Math.abs(correctionPoints);
                         }
                         if (user.fastLab == api.fastLap) {

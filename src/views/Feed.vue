@@ -1,60 +1,62 @@
 <template>
   <h3>Welkom {{ displayName }}</h3>
   <div class="row">
-        <div class="col-md-4 offset-md-0">
-            <div>
-            <div>
-                <h6>Send your prediction for {{nextRace.raceName}}:</h6>
-                <hr />
-            </div>
-            <div v-if="isFormDisabled" class="alert alert-warning" role="alert">
-              <p>You can not give and/or change your prediction anymore for {{nextRace.raceName}}. Come back tomorrow to give your prediction for next race. </p>
-            </div>
-            <label>First Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
-              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
-            </select>
-            <label>Second Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos2" :disabled="isFormDisabled">
-              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
-            </select>
-            <label>Third Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos3" :disabled="isFormDisabled">
-              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
-            </select>
-            <label>Fourth Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos4" :disabled="isFormDisabled">
-              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
-            </select>
-            <label>Fifth Place</label>
-            <select class="form-select" aria-label="Default select example" v-model="pos5" :disabled="isFormDisabled">
-              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
-            </select>
-            <label>Fastest Lap</label>
-            <select class="form-select" aria-label="Default select example" v-model="fastestLap" :disabled="isFormDisabled">
-              <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{item}}</option>
-            </select>
-            <div class="my-3">
-              <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Send prediction</button>
-            </div>
+    <div class="col-md-4 offset-md-0">
+      <div>
+        <div>
+          <h6>Send your prediction for {{ nextRace.raceName }}:</h6>
+          <hr />
         </div>
+        <div v-if="isFormDisabled" class="alert alert-warning" role="alert">
+          <p>You can not give and/or change your prediction anymore for {{ nextRace.raceName }}. Come back tomorrow to
+            give your prediction for next race. </p>
         </div>
+        <label>First Place</label>
+        <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
+          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        <label>Second Place</label>
+        <select class="form-select" aria-label="Default select example" v-model="pos2" :disabled="isFormDisabled">
+          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        <label>Third Place</label>
+        <select class="form-select" aria-label="Default select example" v-model="pos3" :disabled="isFormDisabled">
+          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        <label>Fourth Place</label>
+        <select class="form-select" aria-label="Default select example" v-model="pos4" :disabled="isFormDisabled">
+          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        <label>Fifth Place</label>
+        <select class="form-select" aria-label="Default select example" v-model="pos5" :disabled="isFormDisabled">
+          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        <label>Fastest Lap</label>
+        <select class="form-select" aria-label="Default select example" v-model="fastestLap" :disabled="isFormDisabled">
+          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        <div class="my-3">
+          <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Send
+            prediction</button>
+        </div>
+      </div>
     </div>
-    <h4>Prediction of others for the {{nextRace.raceName}}: </h4>
-    <hr />
-    <div class="display-flex">
-    <div class="card-container" v-for="item in userNextPredictions" :key="item.value">
-      <div class="card" style="max-width: 18rem;">
+  </div>
+  <h4>Prediction of others for the {{ nextRace.raceName }}: </h4>
+  <hr />
+  <div class="display-flex">
+    <div class="card-container" v-for="item in userNextPredictions" :key="item">
+      <div class="card" style="max-width: 18rem;" v-if="item !== undefined">
         <div class="card-body">
-            <h5 class="card-title">{{ item.userName }}</h5>
-            <p>First: {{ item.position1 }}</p>
-            <p>Second: {{ item.position2 }}</p>
-            <p>Third: {{ item.position3 }}</p>
-            <p>Fourth: {{ item.position4 }}</p>
-            <p>Fifth: {{ item.position5 }}</p>
-            <p>Fastest Lap: {{ item.fastLab }}</p>
+          <h5 class="card-title">{{ item.userName }}</h5>
+          <p>First: {{ item.position1 }}</p>
+          <p>Second: {{ item.position2 }}</p>
+          <p>Third: {{ item.position3 }}</p>
+          <p>Fourth: {{ item.position4 }}</p>
+          <p>Fifth: {{ item.position5 }}</p>
+          <p>Fastest Lap: {{ item.fastLab }}</p>
         </div>
-    </div>
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +68,7 @@ import { doc, setDoc, getDocs, query, collection } from 'firebase/firestore'
 import axios from 'axios'
 
 export default {
-  data () {
+  data() {
     return {
       displayName: '',
       pos1: '',
@@ -124,8 +126,8 @@ export default {
       //Loop over all user data
       const querySnap = await getDocs(query(collection(db, 'predictions')));
       querySnap.forEach((doc) => {
-          this.userData.push(doc.data());
-          this.userArray.push(doc.id);
+        this.userData.push(doc.data());
+        this.userArray.push(doc.id);
       });
       this.userData.forEach((data) => {
         // console.log(data[this.nextRace.raceName].userName)
@@ -135,8 +137,9 @@ export default {
     },
     async sendData() {
       if (this.nextRaceDate !== this.currentDate) {
+        // await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
         await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
-          [this.nextRace.raceName] : {
+          [this.nextRace.raceName]: {
             position1: this.pos1,
             position2: this.pos2,
             position3: this.pos3,
@@ -145,11 +148,26 @@ export default {
             fastLab: this.fastestLap,
             userName: auth.currentUser.displayName
           }
-        }, {merge: true})
+        }, { merge: true })
+          // .then(() => {
+          //   return getDocs(query(collection(db, 'predictions')));
+          // }).then(docRef => {
+          //   let jank = [];
+          //   let jank2 = [];
+          //   docRef.forEach((doc) => {
+          //     jank.push(doc.data());
+          //     jank2.push(doc.id);
+          //   });
+
+          //   console.log(jank)
+          // });
         alert('Bedankt voor je voorspelling!')
         window.location.reload()
-      } else {alert(`You are too late to give and/or change your prediction for${this.nextRace}. Come back tomorrow to give your prediction for the next race.`)}
+      } else { 
+        alert(`You are too late to give and/or change your prediction for${this.nextRace}. Come back tomorrow to give your prediction for the next race.`) 
+      }
     },
+
     displayCurrentUser() {
       if (auth.currentUser) {
         this.displayName = auth.currentUser.displayName
@@ -172,7 +190,7 @@ export default {
       });
 
       predictions.forEach((val) => {
-        if (val[this.nextRace.raceName].userName === this.displayName) {
+        if (val[this.nextRace.raceName] !== undefined && val[this.nextRace.raceName].userName === this.displayName) {
           this.pos1 = val[this.nextRace.raceName].position1;
           this.pos2 = val[this.nextRace.raceName].position2;
           this.pos3 = val[this.nextRace.raceName].position3;
@@ -185,7 +203,5 @@ export default {
   }
 }
 </script>
-  
-<style>
 
-</style>
+<style></style>
