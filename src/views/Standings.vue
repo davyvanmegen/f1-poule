@@ -90,12 +90,13 @@ export default {
             //Implement all code to get all data untill now and loop over all races
             for (let i = 0; i < raceNumber; i++) {
                 const response = await axios.get(`https://ergast.com/api/f1/2024/${i}/results.json`)
-                const currentRace = response.data.MRData.RaceTable.Races[0].raceName
-                this.pos1 = response.data.MRData.RaceTable.Races[0].Results[0].Driver.familyName
-                this.pos2 = response.data.MRData.RaceTable.Races[0].Results[1].Driver.familyName
-                this.pos3 = response.data.MRData.RaceTable.Races[0].Results[2].Driver.familyName
-                this.pos4 = response.data.MRData.RaceTable.Races[0].Results[3].Driver.familyName
-                this.pos5 = response.data.MRData.RaceTable.Races[0].Results[4].Driver.familyName
+                const lastInArray = response.data.MRData.RaceTable.Races.length -1;
+                const currentRace = response.data.MRData.RaceTable.Races[lastInArray].raceName
+                this.pos1 = response.data.MRData.RaceTable.Races[lastInArray].Results[0].Driver.familyName
+                this.pos2 = response.data.MRData.RaceTable.Races[lastInArray].Results[1].Driver.familyName
+                this.pos3 = response.data.MRData.RaceTable.Races[lastInArray].Results[2].Driver.familyName
+                this.pos4 = response.data.MRData.RaceTable.Races[lastInArray].Results[3].Driver.familyName
+                this.pos5 = response.data.MRData.RaceTable.Races[lastInArray].Results[4].Driver.familyName
                 const race = {
                     [currentRace] : {
                         position1: this.pos1,
@@ -122,9 +123,9 @@ export default {
                 this.userPoints.push(pointsObj);
             });
             this.computeCurrentResults();
-            console.log(this.userData)
         },
         computeCurrentResults() {
+            // console.log(this.apiData)
             for (var key in this.userArray) {
                 let points = 0;
                 for (var key2 in this.apiData) {
