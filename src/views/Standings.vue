@@ -65,7 +65,7 @@ export default {
                 const obj = response.data.MRData.RaceTable.Races[lastInArray].Results.find((item)=>{return item.FastestLap.rank==='1'})
 
                 if (i!==0) {
-                    const response2 = await axios.get(`http://ergast.com/api/f1/2024/${i}/driverStandings.json`)
+                    const response2 = await axios.get(`https://ergast.com/api/f1/2024/${i}/driverStandings.json`)
                     const currentStandings = response2.data.MRData.StandingsTable.StandingsLists[0].DriverStandings
                     for (let i =0; i < currentStandings.length; i++) {
                         this.currentStandingsArray.push(currentStandings[i].Driver.familyName)
