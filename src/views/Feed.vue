@@ -44,17 +44,45 @@
   </div>
   <h4>Prediction of others for the {{ nextRace.raceName }}: </h4>
   <hr />
-  <div class="display-flex">
+  <div class="">
     <div class="card-container" v-for="item in userNextPredictions" :key="item">
       <div class="card" style="max-width: 18rem;" v-if="item !== undefined">
+        <h5 class="card-header">{{ item.userName }}</h5>
         <div class="card-body">
-          <h5 class="card-title">{{ item.userName }}</h5>
-          <p>First: {{ item.position1 }}</p>
-          <p>Second: {{ item.position2 }}</p>
-          <p>Third: {{ item.position3 }}</p>
-          <p>Fourth: {{ item.position4 }}</p>
-          <p>Fifth: {{ item.position5 }}</p>
-          <p>Fastest Lap: {{ item.fastLab }}</p>
+          <table class="table">
+              <thead class="table-light">
+                  <tr>
+                  <th scope="col">Pos</th>
+                  <th scope="col">Name</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                  <th scope="row">1</th>
+                  <td>{{ item.position1 }}</td>
+                  </tr>
+                  <tr>
+                  <th scope="row">2</th>
+                  <td>{{ item.position2 }}</td>
+                  </tr>
+                  <tr>
+                  <th scope="row">3</th>
+                  <td>{{ item.position3 }}</td>
+                  </tr>
+                  <tr>
+                  <th scope="row">4</th>
+                  <td>{{ item.position4 }}</td>
+                  </tr>
+                  <tr>
+                  <th scope="row">5</th>
+                  <td>{{ item.position5 }}</td>
+                  </tr>
+                  <tr>
+                  <th scope="row">FL</th>
+                  <td>{{ item.fastLab }}</td>
+                  </tr>
+              </tbody>
+          </table>
         </div>
       </div>
     </div>
