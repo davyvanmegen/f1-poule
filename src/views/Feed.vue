@@ -232,4 +232,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.card-body {
+  margin: 0;
+  padding: 0;
+}
+</style>
