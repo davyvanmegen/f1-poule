@@ -1,23 +1,49 @@
 <template>
     <h2>Standings</h2>
-
-    <table class="table">
-        <thead class="table-light">
-            <tr>
-            <th scope="col">Pos</th>
-            <th scope="col">Name</th>
-            <th scope="col">Points</th>
-            </tr>
-        </thead>
-        <tbody v-for="(item, index) in userPoints2" :key="index">
-            <tr>
-            <th scope="row">{{ index+1 }}</th>
-            <td>{{ item.name }}</td>
-            <td>{{ item.value }}</td>
-            </tr>
-        </tbody>
-    </table>
-
+    <div v-if="!showData">
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                <th scope="col" style="width: 15%">Pos</th>
+                <th scope="col" style="width: 60%">Name</th>
+                <th scope="col" style="width: 25%">Points</th>
+                </tr>
+            </thead>
+            <tbody v-for="item in array" :key=item>
+                <tr>
+                <th scope="row">{{item}}</th>
+                <td>
+                    <p class="placeholder-glow">
+                        <span class="placeholder col-8"></span>
+                    </p>
+                </td>
+                <td>
+                    <p class="placeholder-glow">
+                        <span class="placeholder col-4"></span>
+                    </p>
+                </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div v-if="showData">
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                <th scope="col" style="width: 15%">Pos</th>
+                <th scope="col" style="width: 60%">Name</th>
+                <th scope="col" style="width: 25%">Points</th>
+                </tr>
+            </thead>
+            <tbody v-for="(item, index) in userPoints2" :key="index">
+                <tr>
+                <th scope="row">{{ index+1 }}</th>
+                <td>{{ item.name }}</td>
+                <td>{{ item.value }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
@@ -30,6 +56,7 @@ export default {
     
     data() {
         return {
+            array: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
             users: [],
             userData: [],
             userArray: [],
@@ -37,7 +64,8 @@ export default {
             userPoints: [],
             test: [{name: "Davy", value: 0},{name: "Erida", value: 5},{name: "Sem", value: 4}],
             userPoints2: [],
-            currentStandingsArray: []
+            currentStandingsArray: [],
+            showData: false
         }
     },
     mounted () {
@@ -164,6 +192,7 @@ export default {
             // Sort the arrays
             this.userPoints2.sort((a, b) => a.value - b.value).reverse()
             this.test.sort((a, b) => a.value - b.value).reverse();
+            this.showData = true
 
             
         }
@@ -171,6 +200,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.table td {
+    vertical-align: middle;
+}
 
+table tr {
+  height: 60px;
+}
 </style>
