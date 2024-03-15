@@ -4,7 +4,7 @@
     <div class="col-md-4 offset-md-0">
       <div>
         <div>
-          <h6>Send your prediction for {{ nextRace.raceName }}:</h6>
+          <h6>Verstuur je voorspelling voor de <b>{{ nextRace.raceName }}</b></h6>
           <hr />
         </div>
         <div v-if="isFormDisabled" class="alert alert-warning" role="alert">
@@ -36,8 +36,7 @@
           <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
         </select>
         <div class="my-3">
-          <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Send
-            prediction</button>
+          <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Verzend voorspelling</button>
         </div>
       </div>
     </div>
@@ -143,7 +142,7 @@ export default {
     }
   },
 
-  mounted() {
+  created() {
     this.displayCurrentUser()
     this.getNextRace()
     this.getCurrentPredictions()
