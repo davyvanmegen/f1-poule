@@ -48,7 +48,9 @@ export default {
             users: [],
             raceResults: [],
             mockData: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
-            isLoading: true
+            isLoading: true,
+            latestRace: null,
+            usersPoints: []
         }
     },
     async created () {
@@ -80,6 +82,7 @@ export default {
                     currentStandings
                 });
             });
+            this.latestRace = results.data.MRData.RaceTable.Races.raceName.slice(-1);
         },
         async fetchUsersData() {
             const querySnap = await getDocs(query(collection(db, 'predictions')));
@@ -112,6 +115,21 @@ export default {
                 user.points = points;
             });
             this.users.sort((a, b) => b.points - a.points);
+            this.pushStandingsToFirebase()
+        },
+        async pushStandingsToFirebase() {
+            this.users.forEach((user) => {
+                this.usersPoints.push({
+                    userName: user.userName,
+                    points: user.points
+                });
+            });
+            await setDoc(doc(db, 'standings', 'allStandings'), {
+                [this.latestRace] : {
+                    userpoints: this.userPoints
+                }
+            }
+            , { merge: true })
         }
     }
 }
