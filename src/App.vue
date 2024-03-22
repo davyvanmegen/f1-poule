@@ -1,13 +1,13 @@
 <template>
   <Navigation :isLoggedIn="isLoggedIn"></Navigation>
   <div class="container margin-top">
-      <router-view :isLoggedIn="isLoggedIn"/>
+      <router-view />
   </div>
 </template>
 
 <script>
 import Navigation from './components/Navigation.vue'
-import { getAuth, onAuthStateChanged, signOut} from "firebase/auth"
+import { onAuthStateChanged } from "firebase/auth"
 import { auth } from './firebase/init.js'
 
 export default {
@@ -15,13 +15,12 @@ export default {
   components: {
     Navigation
   },
-  mounted() {
+  created() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;
       } else {
         this.isLoggedIn = false
-
       }
     })
   },
