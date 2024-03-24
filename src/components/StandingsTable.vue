@@ -39,7 +39,7 @@
 
 <script>
 import db from '../firebase/init.js'
-import { query, collection, getDocs } from 'firebase/firestore'
+import { query, collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import axios from 'axios'
 
 export default {
@@ -57,7 +57,7 @@ export default {
         await this.fetchData();
         if (this.users.length && this.raceResults.length) {
             this.calculatePoints();
-            this.isLoading = false;
+            //this.isLoading = false;
         }
     },
     methods: {
@@ -82,7 +82,8 @@ export default {
                     currentStandings
                 });
             });
-            this.latestRace = results.data.MRData.RaceTable.Races.raceName.slice(-1);
+            this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0].raceName;
+            console.log(this.latestRace)
         },
         async fetchUsersData() {
             const querySnap = await getDocs(query(collection(db, 'predictions')));
@@ -115,21 +116,27 @@ export default {
                 user.points = points;
             });
             this.users.sort((a, b) => b.points - a.points);
+            this.isLoading = false;
             this.pushStandingsToFirebase()
         },
         async pushStandingsToFirebase() {
-            this.users.forEach((user) => {
-                this.usersPoints.push({
-                    userName: user.userName,
-                    points: user.points
-                });
-            });
-            await setDoc(doc(db, 'standings', 'allStandings'), {
-                [this.latestRace] : {
-                    userpoints: this.userPoints
-                }
+            let userPoints = {}
+            // this.users.forEach((user) => {
+            //     this.usersPoints.push({
+            //         userName: user.userName,
+            //         points: user.points
+            //     });
+            // });
+            for (let i = 0; i < this.users.length; i++) {
+                let userpointsLoop = {
+                    [this.users[i].userName]: this.users[i].points,
+                } 
+                Object.assign(userPoints, userpointsLoop)
+                
             }
-            , { merge: true })
+            await setDoc(doc(db, 'standings', 'allStandings'), {
+                [this.latestRace] : userPoints
+            }, { merge: true })
         }
     }
 }
