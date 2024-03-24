@@ -43,10 +43,12 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import DriverCard from './DriverCard.vue';
 import axios from 'axios';
 import UserCardSkeleton from './UserCardSkeleton.vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebase/init.js'
 
 export default {
   props: {
-      isLoggedIn : false
+      //isLoggedIn : false
     },
   name: 'HomeView',
   components: {
@@ -57,7 +59,17 @@ export default {
   data() {
     return {
       driversApi: [],
+      isLoggedIn: false
     }
+  },
+  created() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false
+      }
+    })
   },
   async mounted() {
     const response = await axios.get('https://ergast.com/api/f1/2024/driverStandings.json');
