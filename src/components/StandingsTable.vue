@@ -55,21 +55,26 @@ export default {
     },
     async created () {
         await this.fetchData();
-        if (this.users.length && this.raceResults.length) {
-            this.calculatePoints();
-            //this.isLoading = false;
-        }
     },
     methods: {
         async fetchData() {
             await this.fetchF1Data();
             await this.fetchUsersData();
+            if (this.users.length && this.raceResults.length) {
+                this.calculatePoints();
+            } else {
+                await this.fetchData();
+            }
         },
         async fetchF1Data() {
             const results = await axios.get(`https://ergast.com/api/f1/2024/results.json`);
             results.data.MRData.RaceTable.Races.forEach(async (race, index) => {
-                const driverStandings = await axios.get(`https://ergast.com/api/f1/2024/${index+1}/driverStandings.json`);
-                const currentStandings = driverStandings.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+                let driverStandings = [];
+                let currentStandings = [];
+                if (index !== 0) {
+                    driverStandings = await axios.get(`https://ergast.com/api/f1/2024/${index}/driverStandings.json`);
+                    currentStandings = driverStandings.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+                }
 
                 this.raceResults.push({
                     raceName: race.raceName,
@@ -83,7 +88,6 @@ export default {
                 });
             });
             this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0].raceName;
-            console.log(this.latestRace)
         },
         async fetchUsersData() {
             const querySnap = await getDocs(query(collection(db, 'predictions')));
@@ -103,9 +107,14 @@ export default {
                     if (userPrediction) {
                         for (let posNr = 1; posNr <= 5; posNr++) {
                             if (userPrediction[`position${posNr}`] == raceResult[`position${posNr}`]) {
-                                const currentPos = raceResult.currentStandings
-                                    .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);
-                                points += (Math.abs(currentPos) + 3);
+                                let bonusPoints = 0;
+                                if (raceResult.currentStandings.length !== 0) {
+                                    const currentPos = raceResult.currentStandings
+                                        .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
+                                    bonusPoints = Math.abs(currentPos);
+                                }
+
+                                points += (bonusPoints + 3);
                             }
                         }
                         if (userPrediction.fastLab == raceResult.fastLap) {
