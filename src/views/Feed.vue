@@ -144,9 +144,12 @@ export default {
 
   created() {
     this.displayCurrentUser()
-    this.getNextRace()
-    this.getCurrentPredictions()
-    this.fetchAllCurrentUserData()
+  
+    this.getNextRace().then(() => {
+      this.getCurrentPredictions().then(() => {
+        this.fetchAllCurrentUserData()
+      })
+    })
   },
   methods: {
     async fetchAllCurrentUserData() {
