@@ -54,20 +54,22 @@ export default {
         }
     },
     async created () {
-        await this.fetchData();
+        this.fetchData();
     },
     methods: {
-        async fetchData() {
-            await this.fetchF1Data();
-            await this.fetchUsersData();
-            if (this.users.length && this.raceResults.length) {
-                this.calculatePoints();
-            } else {
-                await this.fetchData();
-            }
+        fetchData() {
+            this.fetchF1Data().then(() => {
+                this.fetchUsersData().then(() => {
+                    if (this.users.length && this.raceResults.length) {
+                        this.calculatePoints();
+                    } else {
+                        this.fetchData();
+                    }
+                })
+            })
         },
         async fetchF1Data() {
-            const results = await axios.get(`https://ergast.com/api/f1/2024/results.json`);
+            const results = await axios.get(`https://ergast.com/api/f1/2024/results.json?limit=1000`);
             results.data.MRData.RaceTable.Races.forEach(async (race, index) => {
                 let driverStandings = [];
                 let currentStandings = [];
@@ -105,6 +107,7 @@ export default {
                 this.raceResults.forEach((raceResult) => {
                     const userPrediction = user.predictions[raceResult.raceName];
                     if (userPrediction) {
+                        console.log(userPrediction.userName)
                         for (let posNr = 1; posNr <= 5; posNr++) {
                             if (userPrediction[`position${posNr}`] == raceResult[`position${posNr}`]) {
                                 let bonusPoints = 0;
@@ -113,11 +116,10 @@ export default {
                                         .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
                                     bonusPoints = Math.abs(currentPos);
                                 }
-
                                 points += (bonusPoints + 3);
                             }
                         }
-                        if (userPrediction.fastLab == raceResult.fastLap) {
+                        if (userPrediction.fastLab == raceResult.fastLab) {
                             points += 5;
                         }
                     }
