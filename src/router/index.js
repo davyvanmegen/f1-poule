@@ -4,7 +4,9 @@ import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
 import Feed from '../views/Feed.vue'
 import Standings from '../views/Standings.vue'
+import Admin from '../views/Admin.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebase/init.js'
 
 const routes = [
   {
@@ -34,6 +36,15 @@ const routes = [
     path: '/standings',
     name: 'Standings',
     component: Standings
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   }
 ]
 
@@ -57,6 +68,16 @@ const getCurrentUser = () => {
 
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (to.matched.some((record) => record.meta.requiresAdmin)) {
+      const user = (await getCurrentUser()).displayName
+      if (user === 'Davy' || user === 'Simon') {
+      //if (true) {
+        next()
+      } else {
+        alert("You dont have access, you need to be Admin!")
+        next("/")
+      }
+    }
     if (await getCurrentUser()) {
       next()
     } else {
