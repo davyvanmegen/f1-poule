@@ -1,5 +1,5 @@
 <template>
-    <h2>Puntentelling</h2>
+    <h2>Puntentelling na {{ this.latestRaceName }}</h2>
     <table class="table">
         <thead class="table-light">
             <tr>
@@ -50,24 +50,56 @@ export default {
             mockData: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
             isLoading: true,
             latestRace: null,
-            usersPoints: []
+            usersPoints: [],
+            preResults: null,
+            latestRaceName: null
         }
     },
     async created () {
         this.fetchData();
     },
     methods: {
-        fetchData() {
-            this.fetchF1Data().then((result) => {
-                if (result.length !== 0) {
-                    this.raceResults = result;
-                    this.fetchUsersData().then(() => {
-                        this.calculatePoints();
-                    })
-                } else {
-                    this.fetchData();
+        async fetchData() {
+            const querySnap = await getDocs(query(collection(db, 'standings')));
+            const latestRace = await axios.get('https://ergast.com/api/f1/current/last/results.json');
+            this.latestRaceName = latestRace.data.MRData.RaceTable.Races[0].raceName;
+            
+            querySnap.forEach(doc => {
+                this.preResults = doc.data()
+            });
+
+            // const value = Math.max(...Object.entries(this.preResults).map(o => o[1]['roundNr']));
+            // console.log(this.preResults)
+
+            // Object.entries(this.preResults).forEach((val) => {
+            //     if (val[1]['roundNr'] === value) {
+            //         latestRaceName = val[0];
+            //     }
+            // });
+
+            if (this.preResults[this.latestRaceName]) {
+                for (const [key, value] of Object.entries(this.preResults[this.latestRaceName])) {
+                    if (key != 'roundNr') {
+                        this.users.push({
+                            userName: key,
+                            points: value
+                        });
+                    }
                 }
-            })
+                this.users.sort((a, b) => b.points - a.points);
+                this.isLoading = false;
+            } else {
+                this.fetchF1Data().then((result) => {
+                    if (result.length !== 0) {
+                        this.raceResults = result;
+                        this.fetchUsersData().then(() => {
+                            this.calculatePoints();
+                        })
+                    } else {
+                        this.fetchData();
+                    }
+                });
+            }
         },
         async fetchF1Data() {
             const results = await axios.get(`https://ergast.com/api/f1/2024/results.json?limit=1000`);
@@ -92,7 +124,7 @@ export default {
                     currentStandings
                 });
             }
-            this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0].raceName;
+            this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0];
             return customResults;
         },
         async fetchUsersData() {
@@ -131,25 +163,21 @@ export default {
             });
             this.users.sort((a, b) => b.points - a.points);
             this.isLoading = false;
-            this.pushStandingsToFirebase()
+            this.pushStandingsToFirebase();
         },
         async pushStandingsToFirebase() {
-            let userPoints = {}
-            // this.users.forEach((user) => {
-            //     this.usersPoints.push({
-            //         userName: user.userName,
-            //         points: user.points
-            //     });
-            // });
+            let userPoints = {
+                roundNr: parseInt(this.latestRace.round)
+            }
             for (let i = 0; i < this.users.length; i++) {
                 let userpointsLoop = {
                     [this.users[i].userName]: this.users[i].points,
                 } 
-                Object.assign(userPoints, userpointsLoop)
-                
+                Object.assign(userPoints, userpointsLoop);
             }
+
             await setDoc(doc(db, 'standings', 'allStandings'), {
-                [this.latestRace] : userPoints
+                [this.latestRace.raceName] : userPoints
             }, { merge: true })
         }
     }
