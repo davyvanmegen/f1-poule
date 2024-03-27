@@ -58,27 +58,30 @@ export default {
     },
     methods: {
         fetchData() {
-            this.fetchF1Data().then(() => {
-                this.fetchUsersData().then(() => {
-                    if (this.users.length && this.raceResults.length) {
+            this.fetchF1Data().then((result) => {
+                if (result.length !== 0) {
+                    this.raceResults = result;
+                    this.fetchUsersData().then(() => {
                         this.calculatePoints();
-                    } else {
-                        this.fetchData();
-                    }
-                })
+                    })
+                } else {
+                    this.fetchData();
+                }
             })
         },
         async fetchF1Data() {
             const results = await axios.get(`https://ergast.com/api/f1/2024/results.json?limit=1000`);
-            results.data.MRData.RaceTable.Races.forEach(async (race, index) => {
-                let driverStandings = [];
-                let currentStandings = [];
+            const races = results.data.MRData.RaceTable.Races
+            const customResults = [];
+            for (let index = 0; index < races.length; index++) {
+                const race = races[index];
+                let driverStandings = null;
+                let currentStandings = null;
                 if (index !== 0) {
                     driverStandings = await axios.get(`https://ergast.com/api/f1/2024/${index}/driverStandings.json`);
                     currentStandings = driverStandings.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
                 }
-
-                this.raceResults.push({
+                customResults.push({
                     raceName: race.raceName,
                     position1: race.Results[0].Driver.familyName,
                     position2: race.Results[1].Driver.familyName,
@@ -88,8 +91,9 @@ export default {
                     fastLab: race.Results.find(item => item.FastestLap.rank === '1').Driver.familyName,
                     currentStandings
                 });
-            });
+            }
             this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0].raceName;
+            return customResults;
         },
         async fetchUsersData() {
             const querySnap = await getDocs(query(collection(db, 'predictions')));
@@ -107,11 +111,10 @@ export default {
                 this.raceResults.forEach((raceResult) => {
                     const userPrediction = user.predictions[raceResult.raceName];
                     if (userPrediction) {
-                        console.log(userPrediction.userName)
                         for (let posNr = 1; posNr <= 5; posNr++) {
                             if (userPrediction[`position${posNr}`] == raceResult[`position${posNr}`]) {
                                 let bonusPoints = 0;
-                                if (raceResult.currentStandings.length !== 0) {
+                                if (raceResult.currentStandings !== null) {
                                     const currentPos = raceResult.currentStandings
                                         .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
                                     bonusPoints = Math.abs(currentPos);
