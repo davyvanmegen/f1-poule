@@ -27,7 +27,7 @@
 <script>
 import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
-import { query, collection, getDocs, setDoc, doc } from 'firebase/firestore'
+import { query, collection, getDocs, setDoc, doc, getDoc } from 'firebase/firestore'
 import axios from 'axios'
 
 export default {
@@ -41,7 +41,7 @@ export default {
             isLoading: true
         }
     },
-    created () {
+    async mounted () {
         this.getUserName();
     },
     methods: {
