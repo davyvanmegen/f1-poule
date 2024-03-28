@@ -91,7 +91,7 @@ router.beforeEach(async (to, from, next) => {
   isAdmin = 'false'
   if (await getCurrentUser()) {
     console.log('Daaaaaaag')
-    const querySnap = await getDoc(query(doc(db, 'users', 'Davy')))
+    const querySnap = await getDoc(query(doc(db, 'users', (await getCurrentUser()).displayName)))
     isAdmin = querySnap.data().isAdmin
   }
   if (to.matched.some((record) => record.meta.requiresAuth)) {
