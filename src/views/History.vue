@@ -1,6 +1,6 @@
 <template>
     <h1>History</h1>
-    <p>Hier zie je een overzicht van alle voorspellingen die gedaan zijn tot nu toe</p>
+    <p>Hier zie je een overzicht van alle voorspellingen die gedaan zijn tot nu toe.</p>
     <div v-for="(user, index) in users" :key="index">
         <h4>{{ user.userName }}</h4>
         <div v-for="(prediction, key) in user.predictions" :key="key">
