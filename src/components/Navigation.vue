@@ -14,6 +14,9 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/standings">Standings</router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/history">History</router-link>
+          </li>
           <li class="nav-item" v-if="isLoggedIn">
             <router-link class="nav-link" to="/feed">Voorspelling</router-link>
           </li>
