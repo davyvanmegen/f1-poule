@@ -5,6 +5,7 @@ import Signup from '../views/Signup.vue'
 import Feed from '../views/Feed.vue'
 import Standings from '../views/Standings.vue'
 import Admin from '../views/Admin.vue'
+import History from '../views/History.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
@@ -75,6 +76,11 @@ const routes = [
       }
       
   },
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: History
   }
 ]
 
@@ -90,7 +96,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   isAdmin = 'false'
   if (await getCurrentUser()) {
-    console.log('Daaaaaaag')
     const querySnap = await getDoc(query(doc(db, 'users', (await getCurrentUser()).displayName)))
     isAdmin = querySnap.data().isAdmin
   }
