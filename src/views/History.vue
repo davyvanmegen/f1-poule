@@ -14,7 +14,7 @@
         <div v-for="(prediction, key) in users.find(o => o.userName.trim() === selectedUser).predictions" :key="key">
             <div class="">
                 <div class="card-container">
-                <div class="card" style="max-width: 18rem;" v-if="prediction !== undefined">
+                <div class="card" style="min-width: 18rem;" v-if="prediction !== undefined">
                     <h5 class="card-header">{{key}}</h5>
                     <div class="card-body">
                     <table class="table">
@@ -114,7 +114,7 @@
             <div v-for="(prediction, key) in user.predictions" :key="key">
                 <div class="">
                     <div class="card-container">
-                    <div class="card" style="max-width: 18rem;" v-if="prediction !== undefined">
+                    <div class="card" style="min-width: 18rem;" v-if="prediction !== undefined">
                         <h5 class="card-header">{{key}}</h5>
                         <div class="card-body">
                         <table class="table">
