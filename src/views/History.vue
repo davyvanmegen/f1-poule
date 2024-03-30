@@ -1,9 +1,17 @@
 <template>
     <h1>History</h1>
-    <p>Hier zie je een overzicht van alle voorspellingen die gedaan zijn tot nu toe.</p>
-    <div v-for="(user, index) in users" :key="index">
-        <h4>{{ user.userName }}</h4>
-        <div v-for="(prediction, key) in user.predictions" :key="key">
+    <p>Hier zie je een overzicht van alle voorspellingen die gedaan zijn tot nu toe. (Het kan soms zijn dat het laden tussen de 5-10 seconden duurt, dit wordt nog opgelost.)</p>
+    <div class="col-md-2 offset-md-0">
+        <h6>Sorteer op naam:</h6>
+        <select class="form-select" aria-label="Default select example" v-model="selectedUser" :disabled="isFormDisabled">
+            <option value="" disabled hidden>Selecteer een naam</option>
+            <option v-for="(user, index) in users" :key="index">{{ user.userName }}</option>
+        </select>
+    </div>
+    <hr />
+    <div v-if="selectedUser">
+        <h4>{{ users.find(o => o.userName.trim() === selectedUser).userName }}</h4>
+        <div v-for="(prediction, key) in users.find(o => o.userName.trim() === selectedUser).predictions" :key="key">
             <div class="">
                 <div class="card-container">
                 <div class="card" style="max-width: 18rem;" v-if="prediction !== undefined">
@@ -13,38 +21,190 @@
                         <thead class="table-light">
                             <tr>
                             <th scope="col">Pos</th>
-                            <th scope="col">Driver</th>
+                            <th scope="col">Prediction</th>
+                            <th scope="col">Outcome</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-if="raceResults.find(o => o.raceName === key)">
                             <tr>
                             <th scope="row">1</th>
-                            <td>{{ prediction.position1 }}</td>
+                            <td v-if="prediction.position1 === raceResults.find(o => o.raceName === key).position1" style="color:Green;">{{ prediction.position1 }} </td>
+                            <td v-else-if="prediction.position1 !== raceResults.find(o => o.raceName === key).position1" style="color:tomato;">{{ prediction.position1 }} </td>
+                            <td v-else>{{ prediction.position1 }} </td>
+                            <td> {{ raceResults.find(o => o.raceName === key).position1 }}</td>
                             </tr>
                             <tr>
                             <th scope="row">2</th>
-                            <td>{{ prediction.position2 }}</td>
+                            <td v-if="prediction.position2 === raceResults.find(o => o.raceName === key).position2" style="color:Green;">{{ prediction.position2 }} </td>
+                            <td v-else-if="prediction.position2 !== raceResults.find(o => o.raceName === key).position2" style="color:tomato;">{{ prediction.position2 }} </td>
+                            <td v-else>{{ prediction.position2 }} </td>
+                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position2 }}</td>
                             </tr>
                             <tr>
                             <th scope="row">3</th>
-                            <td>{{ prediction.position3 }}</td>
+                            <td v-if="prediction.position3 === raceResults.find(o => o.raceName === key).position3" style="color:Green;">{{ prediction.position3 }} </td>
+                            <td v-else-if="prediction.position3 !== raceResults.find(o => o.raceName === key).position3" style="color:tomato;">{{ prediction.position3 }} </td>
+                            <td v-else>{{ prediction.position3 }} </td>
+                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position3 }}</td>
                             </tr>
                             <tr>
                             <th scope="row">4</th>
-                            <td>{{ prediction.position4 }}</td>
+                            <td v-if="prediction.position4 === raceResults.find(o => o.raceName === key).position4" style="color:Green;">{{ prediction.position4 }} </td>
+                            <td v-else-if="prediction.position4 !== raceResults.find(o => o.raceName === key).position4" style="color:tomato;">{{ prediction.position4 }} </td>
+                            <td v-else>{{ prediction.position4 }} </td>
+                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position4 }}</td>
                             </tr>
                             <tr>
                             <th scope="row">5</th>
-                            <td>{{ prediction.position5 }}</td>
+                            <td v-if="prediction.position5 === raceResults.find(o => o.raceName === key).position5" style="color:Green;">{{ prediction.position5 }} </td>
+                            <td v-else-if="prediction.position5 !== raceResults.find(o => o.raceName === key).position5" style="color:tomato;">{{ prediction.position5 }} </td>
+                            <td v-else>{{ prediction.position5 }} </td>
+                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position5 }}</td>
                             </tr>
                             <tr>
                             <th scope="row">FL</th>
-                            <td>{{ prediction.fastLab }}</td>
+                            <td v-if="prediction.fastLab === raceResults.find(o => o.raceName === key).fastLab" style="color:Green;">{{ prediction.fastLab }} </td>
+                            <td v-else-if="prediction.fastLab !== raceResults.find(o => o.raceName === key).fastLab" style="color:tomato;">{{ prediction.fastLab }} </td>
+                            <td v-else>{{ prediction.fastLab }} </td>
+                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLab }}</td>
+                            </tr>
+                        </tbody>
+                        <tbody v-else>
+                            <tr>
+                            <th scope="row">1</th>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">2</th>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">3</th>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">4</th>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">5</th>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">FL</th>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                            <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
                             </tr>
                         </tbody>
                     </table>
                     </div>
                 </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-else>
+        <div v-for="(user, index) in users" :key="index">
+            <h4>{{ user.userName }}</h4>
+            <div v-for="(prediction, key) in user.predictions" :key="key">
+                <div class="">
+                    <div class="card-container">
+                    <div class="card" style="max-width: 18rem;" v-if="prediction !== undefined">
+                        <h5 class="card-header">{{key}}</h5>
+                        <div class="card-body">
+                        <table class="table">
+                            <thead class="table-light">
+                                <tr>
+                                <th scope="col">Pos</th>
+                                <th scope="col">Prediction</th>
+                                <th scope="col">Outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="raceResults.find(o => o.raceName === key)">
+                                <tr>
+                                <th scope="row">1</th>
+                                <td v-if="prediction.position1 === raceResults.find(o => o.raceName === key).position1" style="color:Green;">{{ prediction.position1 }} </td>
+                                <td v-else-if="prediction.position1 !== raceResults.find(o => o.raceName === key).position1" style="color:tomato;">{{ prediction.position1 }} </td>
+                                <td v-else>{{ prediction.position1 }} </td>
+                                <td> {{ raceResults.find(o => o.raceName === key).position1 }}</td>
+                                </tr>
+                                <tr>
+                                <th scope="row">2</th>
+                                <td v-if="prediction.position2 === raceResults.find(o => o.raceName === key).position2" style="color:Green;">{{ prediction.position2 }} </td>
+                                <td v-else-if="prediction.position2 !== raceResults.find(o => o.raceName === key).position2" style="color:tomato;">{{ prediction.position2 }} </td>
+                                <td v-else>{{ prediction.position2 }} </td>
+                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position2 }}</td>
+                                </tr>
+                                <tr>
+                                <th scope="row">3</th>
+                                <td v-if="prediction.position3 === raceResults.find(o => o.raceName === key).position3" style="color:Green;">{{ prediction.position3 }} </td>
+                                <td v-else-if="prediction.position3 !== raceResults.find(o => o.raceName === key).position3" style="color:tomato;">{{ prediction.position3 }} </td>
+                                <td v-else>{{ prediction.position3 }} </td>
+                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position3 }}</td>
+                                </tr>
+                                <tr>
+                                <th scope="row">4</th>
+                                <td v-if="prediction.position4 === raceResults.find(o => o.raceName === key).position4" style="color:Green;">{{ prediction.position4 }} </td>
+                                <td v-else-if="prediction.position4 !== raceResults.find(o => o.raceName === key).position4" style="color:tomato;">{{ prediction.position4 }} </td>
+                                <td v-else>{{ prediction.position4 }} </td>
+                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position4 }}</td>
+                                </tr>
+                                <tr>
+                                <th scope="row">5</th>
+                                <td v-if="prediction.position5 === raceResults.find(o => o.raceName === key).position5" style="color:Green;">{{ prediction.position5 }} </td>
+                                <td v-else-if="prediction.position5 !== raceResults.find(o => o.raceName === key).position5" style="color:tomato;">{{ prediction.position5 }} </td>
+                                <td v-else>{{ prediction.position5 }} </td>
+                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).position5 }}</td>
+                                </tr>
+                                <tr>
+                                <th scope="row">FL</th>
+                                <td v-if="prediction.fastLab === raceResults.find(o => o.raceName === key).fastLab" style="color:Green;">{{ prediction.fastLab }} </td>
+                                <td v-else-if="prediction.fastLab !== raceResults.find(o => o.raceName === key).fastLab" style="color:tomato;">{{ prediction.fastLab }} </td>
+                                <td v-else>{{ prediction.fastLab }} </td>
+                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLab }}</td>
+                                </tr>
+                            </tbody>
+                            <tbody v-else>
+                                <tr>
+                                <th scope="row">1</th>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                </tr>
+                                <tr>
+                                <th scope="row">2</th>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                </tr>
+                                <tr>
+                                <th scope="row">3</th>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                </tr>
+                                <tr>
+                                <th scope="row">4</th>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                </tr>
+                                <tr>
+                                <th scope="row">5</th>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                </tr>
+                                <tr>
+                                <th scope="row">FL</th>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                <td class="placeholder-glow"><span class="placeholder col-6"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,12 +221,14 @@ export default {
     data () {
         return {
             users: [],
-            raceResults: []
+            raceResults: [],
+            selectedUser: ''
         }
     },
     mounted() {
         this.fetchUsersData()
-        //this.fetchF1Data()
+        this.fetchF1Data()
+        //this.calculatePoints()
     },
     methods: {
         async fetchUsersData() {
@@ -104,8 +266,38 @@ export default {
             }
             this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0];
             this.raceResults = customResults;
-            //console.log(this.raceResults)
-            let obj = this.raceResults.find(o => o.raceName === 'string 1');
+
+            //let obj = this.raceResults.find(o => o.raceName === 'Australian Grand Prix');
+            //console.log(obj)
+        },
+        calculatePoints() {
+            this.users.forEach((user) => {
+                let points = 0;
+                this.raceResults.forEach((raceResult) => {
+                    const userPrediction = user.predictions[raceResult.raceName];
+                    if (userPrediction) {
+                        for (let posNr = 1; posNr <= 5; posNr++) {
+                            if (userPrediction[`position${posNr}`] == raceResult[`position${posNr}`]) {
+                                let bonusPoints = 0;
+                                if (raceResult.currentStandings !== null) {
+                                    const currentPos = raceResult.currentStandings
+                                        .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
+                                    bonusPoints = Math.abs(currentPos);
+                                }
+                                points += (bonusPoints + 3);
+                            }
+                        }
+                        if (userPrediction.fastLab == raceResult.fastLab) {
+                            points += 5;
+                        }
+                    }
+                    console.log(points)
+                });
+                user.points = points;
+            });
+            this.users.sort((a, b) => b.points - a.points);
+            this.isLoading = false;
+            console.log(this.raceResults)
         },
         matchData(){
                
@@ -114,6 +306,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.card-body {
+  margin: 0;
+  padding: 0;
+}
 </style>
