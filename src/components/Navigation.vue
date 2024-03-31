@@ -12,19 +12,19 @@
             <router-link class="nav-link" to="/">Home</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/standings">Standings</router-link>
+            <router-link class="nav-link" to="/standings">Uitslagen</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/history">History</router-link>
+            <router-link class="nav-link" to="/history">Historie</router-link>
           </li>
           <li class="nav-item" v-if="isLoggedIn">
             <router-link class="nav-link" to="/feed">Voorspelling</router-link>
           </li>
         </ul>
         <ul class="navbar-nav">
-          <li class="nav-item" v-if="!isLoggedIn"><router-link class="nav-link" to="/login">Login</router-link></li>
-          <li class="nav-item" v-if="!isLoggedIn"> <router-link class="nav-link" to="/signup">Signup</router-link></li>
-          <li class="nav-item" v-if="isLoggedIn"><button class="nav-link" @click="handleSignOut">Log out</button></li>
+          <li class="nav-item" v-if="!isLoggedIn"><router-link class="nav-link" to="/login">Inloggen</router-link></li>
+          <li class="nav-item" v-if="!isLoggedIn"> <router-link class="nav-link" to="/signup">Inschrijven</router-link></li>
+          <li class="nav-item" v-if="isLoggedIn"><button class="nav-link" @click="handleSignOut">Uitloggen</button></li>
         </ul>
       </div>
     </div>

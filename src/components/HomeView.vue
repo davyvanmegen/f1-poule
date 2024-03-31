@@ -5,36 +5,51 @@
     <h5 class="card-header">Hoe werkt het?</h5>
     <div class="card-body">
       <p class="card-text">
-        Doe mee en verdien punten door te voorspellen welke 5 coureurs als eerste over de streep komen, 
-        en voorspel wie de snelste ronde rijdt. Voor elke goedgekozen coureur op de goede plaats verdien
-        je 3 punten plus correctie punten, en voor de snelste race ronde verdien je 5 punten. De correctie
-        punten worden bepaald aan de hand van hoe gewaagd jou voorspelling is. Bijvoorbeeld, voorspel je 
-        dat een coureur op plek 1 eindigd, maar hij staat in het kampioenschap op plaats 10, dan krijg je
-        het verschil als extra punten, in dit geval dus 9 extra punten. Veel plezier!
+        <ul>
+          <li>Voorspel de top 5</li>
+          <li>Voorspel de snelste raceronde (en tijd)</li>
+          <li>Verdien bonus punten</li>
+        </ul>
+        Doe mee en verdien punten dooe de top 5 te voorspellen. Wanneer je de positie goed hebt krijg je <b>3 punten</b>,
+        en als de coureur in de top 5 eindigd maar niet op je juiste positie krijg je <b>1 punt</b>. <br><br>
+        
+        Voorspel je de coureur met de snelste raceronde dan krijg je <b>5 punten!</b>  <br><br>
+        
+        Doe ook eens een gewaagde voorspelling en verdien bonus punten! Bijvoorbeeld, voorspel je 
+        dat een coureur op positie 1 eindigd, maar hij staat in het kampioenschap op plaats 10, dan krijg je
+        het verschil als extra punten, in dit geval dus 9 extra punten. <br><br>
+        
+        Veel plezier!
       </p>
     </div>
   </div>
   <br>
   <div class="card">
-    <h5 class="card-header">Zelf een voorspelling maken?</h5>
+    <h5 class="card-header">Wil je nou zelf ook een voorspelling maken?</h5>
     <div class="card-body">
-      <p class="card-text">Klik dan op de onderstaande knop</p>
-      <router-link class="btn btn-primary" v-if="isLoggedIn" to="/feed">Maak een voorspelling</router-link>
-      <router-link class="btn btn-primary" v-if="!isLoggedIn" to="/login">Maak een voorspelling</router-link>
+      <div v-if="isLoggedIn">
+        <p class="card-text">Klik dan op de onderstaande knop</p>
+        <router-link class="btn btn-primary" v-if="isLoggedIn" to="/feed">Maak een voorspelling</router-link>
+      </div>
+      <div v-if="!isLoggedIn">
+        <p class="card-text">Om een voorspelling te maken moet je ingelogd zijn</p>
+        <router-link class="btn btn-primary"  to="/login">Inloggen</router-link>
+      </div>
     </div>
   </div>
   <br>
   <h3>De actuele stand in het WK:</h3>
   <hr>
-  <Suspense>
-    <template #default>
-      <DriverCard/>
-    </template>
-    <template #fallback>
-      <UserCardSkeleton/>
-    </template>
-  </Suspense>
-
+  <div class="card-container">
+    <Suspense>
+      <template #default>
+        <DriverCard/>
+      </template>
+      <template #fallback>
+        <UserCardSkeleton/>
+      </template>
+    </Suspense>    
+  </div>
 </template>
 
 <script>
@@ -79,17 +94,10 @@ export default {
 </script>
 
 <style>
-
-.display-flex {
+.card-container {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
-
-.card-container {
-  width: 49%;
-  margin: 10px 0;
-}
-
 </style>

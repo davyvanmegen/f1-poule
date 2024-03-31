@@ -1,101 +1,95 @@
 <template>
   <h3>Welkom {{ displayName }}</h3>
+  <h6>Verstuur je voorspelling voor de <b>{{ nextRace.raceName }}</b></h6>
+  <hr />
   <div class="row">
     <div class="col-md-4 offset-md-0">
-      <div>
-        <div>
-          <h6>Verstuur je voorspelling voor de <b>{{ nextRace.raceName }}</b></h6>
-          <hr />
+      <div v-if="isFormDisabled" class="alert alert-warning" role="alert">
+        <p>Je kan je voorspelling voor de {{ nextRace.raceName }} niet meer invullen/aanpassen. Kom morgen terug om je voorspelling voor de volgende race te doen. </p>
+      </div>
+      <label>Eerste plek</label>
+      <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
+        <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+      </select>
+      <label>Tweede plek</label>
+      <select class="form-select" aria-label="Default select example" v-model="pos2" :disabled="isFormDisabled">
+        <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+      </select>
+      <label>Derde plek</label>
+      <select class="form-select" aria-label="Default select example" v-model="pos3" :disabled="isFormDisabled">
+        <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+      </select>
+      <label>Vierde plek</label>
+      <select class="form-select" aria-label="Default select example" v-model="pos4" :disabled="isFormDisabled">
+        <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+      </select>
+      <label>Vijfde plek</label>
+      <select class="form-select" aria-label="Default select example" v-model="pos5" :disabled="isFormDisabled">
+        <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+      </select>
+      <label>Snelste raceronde</label>
+      <select class="form-select" aria-label="Default select example" v-model="fastestLap" :disabled="isFormDisabled">
+        <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+      </select>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Snelste raceronde tijd</label>
+        <div class="display-flex">
+          <label for="exampleInputEmail1">Minuten</label>
+          <label for="exampleInputEmail1">Seconden</label>
+          <label for="exampleInputEmail1">Milliseconden</label>
         </div>
-        <div v-if="isFormDisabled" class="alert alert-warning" role="alert">
-          <p>You can not give and/or change your prediction anymore for {{ nextRace.raceName }}. Come back tomorrow to
-            give your prediction for next race. </p>
+        <div class="display-flex">
+          <input class="form-control" placeholder="(m)" v-model="fastestLapMinutes" style="max-width: 120px;" type="string" maxlength="1">
+          <input class="form-control" placeholder="(ss)" v-model="fastestLapSeconds" style="max-width: 120px;" type="string" maxlength="2">
+          <input class="form-control" placeholder="(mmm)" v-model="fastestLapMilliseconds" style="max-width: 120px;" type="string" maxlength="3">
         </div>
-        <label>First Place</label>
-        <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
-          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        <label>Second Place</label>
-        <select class="form-select" aria-label="Default select example" v-model="pos2" :disabled="isFormDisabled">
-          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        <label>Third Place</label>
-        <select class="form-select" aria-label="Default select example" v-model="pos3" :disabled="isFormDisabled">
-          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        <label>Fourth Place</label>
-        <select class="form-select" aria-label="Default select example" v-model="pos4" :disabled="isFormDisabled">
-          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        <label>Fifth Place</label>
-        <select class="form-select" aria-label="Default select example" v-model="pos5" :disabled="isFormDisabled">
-          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        <label>Fastest Lap</label>
-        <select class="form-select" aria-label="Default select example" v-model="fastestLap" :disabled="isFormDisabled">
-          <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        <div class="form-group">
-          <label for="exampleInputEmail1">Snelste raceronde tijd</label>
-          <div class="display-flex">
-            <label for="exampleInputEmail1">Minuten</label>
-            <label for="exampleInputEmail1">Seconden</label>
-            <label for="exampleInputEmail1">Milliseconden</label>
-          </div>
-          <div class="display-flex">
-            <input class="form-control" placeholder="(m)" v-model="fastestLapMinutes" style="max-width: 120px;" type="string" maxlength="1">
-            <input class="form-control" placeholder="(ss)" v-model="fastestLapSeconds" style="max-width: 120px;" type="string" maxlength="2">
-            <input class="form-control" placeholder="(mmm)" v-model="fastestLapMilliseconds" style="max-width: 120px;" type="string" maxlength="3">
-          </div>
-        </div>
-        <div class="my-3">
-          <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Verzend voorspelling</button>
-        </div>
+      </div>
+      <div class="my-3">
+        <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Verzend
+          voorspelling</button>
       </div>
     </div>
   </div>
   <h4>Prediction of others for the {{ nextRace.raceName }}: </h4>
   <hr />
-  <div class="">
-    <div class="card-container" v-for="item in userNextPredictions" :key="item">
-      <div class="card" style="max-width: 18rem;" v-if="item !== undefined">
-        <h5 class="card-header">{{ item.userName }}</h5>
-        <div class="card-body">
-          <table class="table">
-              <thead class="table-light">
-                  <tr>
-                  <th scope="col">Pos</th>
-                  <th scope="col">Name</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                  <th scope="row">1</th>
-                  <td>{{ item.position1 }}</td>
-                  </tr>
-                  <tr>
-                  <th scope="row">2</th>
-                  <td>{{ item.position2 }}</td>
-                  </tr>
-                  <tr>
-                  <th scope="row">3</th>
-                  <td>{{ item.position3 }}</td>
-                  </tr>
-                  <tr>
-                  <th scope="row">4</th>
-                  <td>{{ item.position4 }}</td>
-                  </tr>
-                  <tr>
-                  <th scope="row">5</th>
-                  <td>{{ item.position5 }}</td>
-                  </tr>
-                  <tr>
-                  <th scope="row">FL</th>
-                  <td>{{ item.fastLab }}</td>
-                  </tr>
-              </tbody>
-          </table>
-        </div>
+  <div class="card-container">
+    <div class="card" v-for="item in userNextPredictions" :key="item">
+      <h5 class="card-header">{{ item.userName }}</h5>
+      <div class="card-body">
+        <table class="table">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Pos</th>
+              <th scope="col">Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>{{ item.position1 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>{{ item.position2 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>{{ item.position3 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>{{ item.position4 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">5</th>
+              <td>{{ item.position5 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">FL</th>
+              <td>{{ item.fastLab }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -161,7 +155,7 @@ export default {
 
   created() {
     this.displayCurrentUser()
-  
+
     this.getNextRace().then(() => {
       this.getCurrentPredictions().then(() => {
         this.fetchAllCurrentUserData()
@@ -177,10 +171,11 @@ export default {
         this.userArray.push(doc.id);
       });
       this.userData.forEach((data) => {
-        // console.log(data[this.nextRace.raceName].userName)
-        this.userNextPredictions.push(data[this.nextRace.raceName])
+        if (data[this.nextRace.raceName]) {
+          this.userNextPredictions.push(data[this.nextRace.raceName])
+        }
       })
-      //console.log(this.userData)
+      console.log(this.userNextPredictions)
     },
     async sendData() {
       if (this.nextRaceDate !== this.currentDate) {
@@ -198,23 +193,11 @@ export default {
             fastestLapMilliseconds: this.fastestLapMilliseconds,
             userName: auth.currentUser.displayName
           }
-        }, { merge: true })
-          // .then(() => {
-          //   return getDocs(query(collection(db, 'predictions')));
-          // }).then(docRef => {
-          //   let jank = [];
-          //   let jank2 = [];
-          //   docRef.forEach((doc) => {
-          //     jank.push(doc.data());
-          //     jank2.push(doc.id);
-          //   });
-
-          //   console.log(jank)
-          // });
+        }, { merge: true });
         alert('Bedankt voor je voorspelling!')
         window.location.reload()
-      } else { 
-        alert(`You are too late to give and/or change your prediction for${this.nextRace}. Come back tomorrow to give your prediction for the next race.`) 
+      } else {
+        alert(`You are too late to give and/or change your prediction for${this.nextRace}. Come back tomorrow to give your prediction for the next race.`)
       }
     },
 
@@ -258,8 +241,22 @@ export default {
 </script>
 
 <style scoped>
-.card-body {
-  margin: 0;
-  padding: 0;
+.card-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.card {
+  min-width: 49%;
+  margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 992px) {
+  .card {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
 </style>
