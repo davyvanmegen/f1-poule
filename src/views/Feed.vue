@@ -35,6 +35,19 @@
         <select class="form-select" aria-label="Default select example" v-model="fastestLap" :disabled="isFormDisabled">
           <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
         </select>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Snelste raceronde tijd</label>
+          <div class="display-flex">
+            <label for="exampleInputEmail1">Minuten</label>
+            <label for="exampleInputEmail1">Seconden</label>
+            <label for="exampleInputEmail1">Milliseconden</label>
+          </div>
+          <div class="display-flex">
+            <input class="form-control" placeholder="(m)" v-model="fastestLapMinutes" style="max-width: 120px;" type="string" maxlength="1">
+            <input class="form-control" placeholder="(ss)" v-model="fastestLapSeconds" style="max-width: 120px;" type="string" maxlength="2">
+            <input class="form-control" placeholder="(mmm)" v-model="fastestLapMilliseconds" style="max-width: 120px;" type="string" maxlength="3">
+          </div>
+        </div>
         <div class="my-3">
           <button type="button" class="btn btn-primary" @click="sendData" :disabled="isFormDisabled">Verzend voorspelling</button>
         </div>
@@ -104,6 +117,10 @@ export default {
       pos4: '',
       pos5: '',
       fastestLap: '',
+      fastestLapTime: {},
+      fastestLapMinutes: '',
+      fastestLapSeconds: '',
+      fastestLapMilliseconds: '',
       nextRace: {},
       isFormDisabled: false,
       prediction: [],
@@ -176,6 +193,9 @@ export default {
             position4: this.pos4,
             position5: this.pos5,
             fastLab: this.fastestLap,
+            fastestLapMinutes: this.fastestLapMinutes,
+            fastestLapSeconds: this.fastestLapSeconds,
+            fastestLapMilliseconds: this.fastestLapMilliseconds,
             userName: auth.currentUser.displayName
           }
         }, { merge: true })
@@ -227,6 +247,9 @@ export default {
           this.pos4 = val[this.nextRace.raceName].position4;
           this.pos5 = val[this.nextRace.raceName].position5;
           this.fastestLap = val[this.nextRace.raceName].fastLab;
+          this.fastestLapMinutes = val[this.nextRace.raceName].fastestLapMinutes
+          this.fastestLapSeconds = val[this.nextRace.raceName].fastestLapSeconds
+          this.fastestLapMilliseconds = val[this.nextRace.raceName].fastestLapMilliseconds
         }
       });
     }

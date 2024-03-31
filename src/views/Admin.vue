@@ -111,13 +111,34 @@ export default {
                                         .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
                                     bonusPoints = Math.abs(currentPos);
                                 }
-                                points += (bonusPoints + 3);
+                                points += (bonusPoints + 2);
                             }
                         }
+                        // Compute fastest lap points
                         if (userPrediction.fastLab == raceResult.fastLab) {
                             points += 5;
                         }
+
+                        // Compute top 5 points
+                        let cloneUserPrediction = (({ fastLab, ...o }) => o)(userPrediction) // remove b and c
+                        let cloneRaceResult = (({ fastLab, ...o }) => o)(raceResult)
+                        console.log(cloneUserPrediction)
+                        console.log(cloneRaceResult)
+                        let top5Points = 0
+                        for (var key in cloneUserPrediction) {
+                            if (cloneUserPrediction.hasOwnProperty(key)) {
+                                for (var key2 in cloneRaceResult) {
+                                    if (cloneRaceResult.hasOwnProperty(key2)) {
+                                        if (cloneRaceResult[key2] === cloneUserPrediction[key]) {
+                                            top5Points += 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        points += top5Points
                     }
+                    
                 });
                 user.points = points;
             });
