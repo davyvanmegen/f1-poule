@@ -50,7 +50,7 @@
       </div>
     </div>
   </div>
-  <h4>Prediction of others for the {{ nextRace.raceName }}: </h4>
+  <h4>Voorspellingen van anderen voor de {{ nextRace.raceName }}: </h4>
   <hr />
   <div class="card-container">
     <div class="card" v-for="item in userNextPredictions" :key="item">
@@ -66,27 +66,38 @@
           <tbody>
             <tr>
               <th scope="row">1</th>
-              <td>{{ item.position1 }}</td>
+              <td v-if="item.position1">{{ item.position1 }}</td>
+              <td v-else><i>Geen voorspelling</i></td>
             </tr>
             <tr>
               <th scope="row">2</th>
-              <td>{{ item.position2 }}</td>
+              <td v-if="item.position2">{{ item.position2 }}</td>
+              <td v-else><i>Geen voorspelling</i></td>
             </tr>
             <tr>
               <th scope="row">3</th>
-              <td>{{ item.position3 }}</td>
+              <td v-if="item.position3">{{ item.position3 }}</td>
+              <td v-else><i>Geen voorspelling</i></td>
             </tr>
             <tr>
               <th scope="row">4</th>
-              <td>{{ item.position4 }}</td>
+              <td v-if="item.position4">{{ item.position4 }}</td>
+              <td v-else><i>Geen voorspelling</i></td>
             </tr>
             <tr>
               <th scope="row">5</th>
-              <td>{{ item.position5 }}</td>
+              <td v-if="item.position5">{{ item.position5 }}</td>
+              <td v-else><i>Geen voorspelling</i></td>
             </tr>
             <tr>
               <th scope="row">FL</th>
-              <td>{{ item.fastLab }}</td>
+              <td v-if="item.fastLab">{{ item.fastLab }}</td>
+              <td v-else><i>Geen voorspelling</i></td>
+            </tr>
+            <tr>
+              <th scope="row">FLT</th>
+              <td v-if="item.fastestLapMinutes">{{ item.fastestLapMinutes }}:{{ item.fastestLapSeconds }}.{{ item.fastestLapMilliseconds }} </td>
+              <td v-else><i>Geen voorspelling</i></td>
             </tr>
           </tbody>
         </table>
@@ -230,9 +241,9 @@ export default {
           this.pos4 = val[this.nextRace.raceName].position4;
           this.pos5 = val[this.nextRace.raceName].position5;
           this.fastestLap = val[this.nextRace.raceName].fastLab;
-          this.fastestLapMinutes = val[this.nextRace.raceName].fastestLapMinutes
-          this.fastestLapSeconds = val[this.nextRace.raceName].fastestLapSeconds
-          this.fastestLapMilliseconds = val[this.nextRace.raceName].fastestLapMilliseconds
+          this.fastestLapMinutes = val[this.nextRace.raceName].fastestLapMinutes;
+          this.fastestLapSeconds = val[this.nextRace.raceName].fastestLapSeconds;
+          this.fastestLapMilliseconds = val[this.nextRace.raceName].fastestLapMilliseconds;
         }
       });
     }
@@ -258,5 +269,10 @@ export default {
     width: 100%;
     margin-bottom: 10px;
   }
+}
+
+.card-body {
+  margin: 0;
+  padding: 0;
 }
 </style>

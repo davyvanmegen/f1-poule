@@ -138,9 +138,11 @@ export default {
             });
         },
         calculatePoints() {
+            let lapTimeDifferenceArray = []
             this.users.forEach((user) => {
                 let points = 0;
                 this.raceResults.forEach((raceResult) => {
+                    let pointsLoop = 0;
                     const userPrediction = user.predictions[raceResult.raceName];
                     if (userPrediction) {
                         for (let posNr = 1; posNr <= 5; posNr++) {
@@ -152,11 +154,25 @@ export default {
                                     bonusPoints = Math.abs(currentPos);
                                 }
                                 points += (bonusPoints + 3);
+                                pointsLoop += bonusPoints + 2
                             }
                         }
+                        // Compute fastest lap points
                         if (userPrediction.fastLab == raceResult.fastLab) {
                             points += 5;
+                            pointsLoop += 5;
                         }
+
+                        // Compute fastest lap time difference
+                        
+                        let test = '32'
+                        //console.log(Math.abs(moment(`2:${test}.333`, 'mm:ss.SSS').diff(moment(`2:40.333`, 'mm:ss.SSS'))))
+                        
+                        if (userPrediction.fastestLapMinutes && userPrediction.fastestLapSeconds && userPrediction.fastestLapMilliseconds) {
+                            let lapTimeDifference = Math.abs(moment(`${userPrediction.fastestLapMinutes}:${userPrediction.fastestLapSeconds}.${userPrediction.fastestLapMilliseconds}`, 'mm:ss.SSS').diff(moment(raceResult.fastLapTime, 'mm:ss.SSS')))
+                            lapTimeDifferenceArray.push({[userPrediction.userName] : {[raceResult.raceName] : lapTimeDifference}})
+                        }
+
                         // Compute top 5 points
                         let cloneUserPrediction = (({ fastLab, ...o }) => o)(userPrediction) // remove b and c
                         let cloneRaceResult = (({ fastLab, ...o }) => o)(raceResult)
@@ -175,10 +191,13 @@ export default {
                             }
                         }
                         points += top5Points
+                        pointsLoop += top5Points
                     }
+                    this.raceResultsPerRace.push({[raceResult.raceName] : {[user.userName] : pointsLoop}})
                 });
                 user.points = points;
             });
+            //console.log(this.raceResultsPerRace)
             this.users.sort((a, b) => b.points - a.points);
             this.isLoading = false;
             this.pushStandingsToFirebase();
@@ -197,6 +216,14 @@ export default {
             await setDoc(doc(db, 'standings', 'allStandings'), {
                 [this.latestRace.raceName] : userPoints
             }, { merge: true })
+            for (let i = 0; i < this.raceResultsPerRace.length; i++) {
+                let grandPrixName = Object.keys(this.raceResultsPerRace[i])[0]
+                let testObject = this.raceResultsPerRace[i][grandPrixName]
+                let userNameTest = Object.keys(this.raceResultsPerRace[i][grandPrixName])[0]
+                await setDoc(doc(db, 'standings', grandPrixName), {
+                    [userNameTest] : testObject[userNameTest]
+                }, { merge: true })
+            }
         }
     }
 }

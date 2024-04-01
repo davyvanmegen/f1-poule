@@ -10,7 +10,7 @@
           <li>Voorspel de snelste raceronde (en tijd)</li>
           <li>Verdien bonus punten</li>
         </ul>
-        Doe mee en verdien punten dooe de top 5 te voorspellen. Wanneer je de positie goed hebt krijg je <b>3 punten</b>,
+        Doe mee en verdien punten door de top 5 te voorspellen. Wanneer je de positie goed hebt krijg je <b>3 punten</b>,
         en als de coureur in de top 5 eindigd maar niet op je juiste positie krijg je <b>1 punt</b>. <br><br>
         
         Voorspel je de coureur met de snelste raceronde dan krijg je <b>5 punten!</b>  <br><br>
