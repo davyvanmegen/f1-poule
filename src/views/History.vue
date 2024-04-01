@@ -12,7 +12,6 @@
     <div v-if="selectedUser">
         <h4>{{ users.find(o => o.userName.trim() === selectedUser).userName }}</h4>
         <div v-for="(prediction, key) in users.find(o => o.userName.trim() === selectedUser).predictions" :key="key">
-            <div class="">
                 <div class="card-container">
                 <div class="card" style="min-width: 18rem;" v-if="prediction !== undefined">
                     <h5 class="card-header">{{key}}</h5>
@@ -68,7 +67,20 @@
                             <td v-else>{{ prediction.fastLab }} </td>
                             <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLab }}</td>
                             </tr>
+                            <tr>
+                            <th scope="row">FLT</th>
+                            <td v-if="prediction.fastestLapMinutes">{{ prediction.fastestLapMinutes }}:{{ prediction.fastestLapSeconds }}.{{ prediction.fastestLapMilliseconds }} </td>
+                            <td v-else></td>
+                            <td></td>
+                            </tr>
+                            <tr>
+                            <th scope="row">Punten</th>
+                            <td v-if="usersStandings.find(o => o.raceName === key)"> + {{usersStandings.find(o => o.raceName === key).points[users.find(o => o.userName.trim() === selectedUser).userName]}} </td>
+                            <td v-else></td>
+                            <td></td>
+                            </tr>
                         </tbody>
+                        
                         <tbody v-else>
                             <tr>
                             <th scope="row">1</th>
@@ -105,7 +117,6 @@
                     </div>
                 </div>
                 </div>
-            </div>
         </div>
     </div>
     <div v-else>
@@ -168,6 +179,18 @@
                                 <td v-else>{{ prediction.fastLab }} </td>
                                 <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLab }}</td>
                                 </tr>
+                                <tr>
+                                <th scope="row">FLT</th>
+                                <td v-if="prediction.fastestLapMinutes">{{ prediction.fastestLapMinutes }}:{{ prediction.fastestLapSeconds }}.{{ prediction.fastestLapMilliseconds }} </td>
+                                <td v-else></td>
+                                <td></td>
+                                </tr>
+                                <tr>
+                                <th scope="row">Punten</th>
+                                <td v-if="usersStandings.find(o => o.raceName === key)"> + {{usersStandings.find(o => o.raceName === key).points[user.userName]}} </td>
+                                <td v-else></td>
+                                <td></td>
+                                </tr>
                             </tbody>
                             <tbody v-else>
                                 <tr>
@@ -221,6 +244,7 @@ export default {
     data () {
         return {
             users: [],
+            usersStandings: [],
             raceResults: [],
             selectedUser: ''
         }
@@ -238,6 +262,13 @@ export default {
                     userName: doc.id,
                     predictions: doc.data(),
                     points: 0
+                });
+            });
+            const querySnap2 = await getDocs(query(collection(db, 'standings')));
+            querySnap2.forEach((doc) => {
+                this.usersStandings.push({
+                    raceName: doc.id,
+                    points: doc.data()
                 });
             });
         },
@@ -307,6 +338,25 @@ export default {
 </script>
 
 <style scoped>
+.card-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.card {
+  min-width: 49%;
+  margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 992px) {
+  .card {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
 .card-body {
   margin: 0;
   padding: 0;
