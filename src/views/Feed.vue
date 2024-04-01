@@ -34,9 +34,9 @@
       <div class="form-group">
         <label for="exampleInputEmail1">Snelste raceronde tijd</label>
         <div class="display-flex">
-          <label for="exampleInputEmail1">Minuten</label>
-          <label for="exampleInputEmail1">Seconden</label>
-          <label for="exampleInputEmail1">Milliseconden</label>
+          <label for="exampleInputEmail1">Minuten (m)</label>
+          <label for="exampleInputEmail1">Seconden (ss)</label>
+          <label for="exampleInputEmail1">Milliseconden (mmm)</label>
         </div>
         <div class="display-flex">
           <input class="form-control" placeholder="(m)" v-model="fastestLapMinutes" style="max-width: 120px;" type="string" maxlength="1">
@@ -190,6 +190,9 @@ export default {
     },
     async sendData() {
       if (this.nextRaceDate !== this.currentDate) {
+        if (this.fastestLapSeconds.length === 1) {
+          this.fastestLapSeconds = "0".concat(this.fastestLapSeconds)
+        }
         // await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
         await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
           [this.nextRace.raceName]: {
