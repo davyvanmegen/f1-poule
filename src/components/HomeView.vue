@@ -7,13 +7,16 @@
       <p class="card-text">
         <ul>
           <li>Voorspel de top 5</li>
-          <li>Voorspel de snelste raceronde (en tijd)</li>
+          <li>Voorspel wie de snelste raceronde rijdt</li>
+          <li>Voorspel de snelste raceronde tijd</li>
           <li>Verdien bonus punten</li>
         </ul>
         Doe mee en verdien punten door de top 5 te voorspellen. Wanneer je de positie goed hebt krijg je <b>3 punten</b>,
-        en als de coureur in de top 5 eindigd maar niet op je juiste positie krijg je <b>1 punt</b>. <br><br>
+        en als jouw gekozen coureur in de top 5 eindigd maar niet op je juiste positie krijg je <b>1 punt</b>. <br><br>
         
         Voorspel je de coureur met de snelste raceronde dan krijg je <b>5 punten!</b>  <br><br>
+
+        En voorspel je de snelste raceronde tijd van de race dan krijg je nog eens <b>5 punten!</b>  <br><br>
         
         Doe ook eens een gewaagde voorspelling en verdien bonus punten! Bijvoorbeeld, voorspel je 
         dat een coureur op positie 1 eindigd, maar hij staat in het kampioenschap op plaats 10, dan krijg je
