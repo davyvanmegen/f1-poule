@@ -12,7 +12,7 @@ import db from '../firebase/init.js'
 import { query, collection, getDocs, setDoc, doc, getDoc } from 'firebase/firestore'
 
 
-let isAdmin = 'false'
+let isAdmin = false
 const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     const removeListener = onAuthStateChanged(
@@ -68,7 +68,7 @@ const routes = [
     // },
     beforeEnter(to) {
       console.log(isAdmin)
-      if (isAdmin==='false') {
+      if (!isAdmin===true) {
           alert('You need to be admin')
           return '/'
       } else {
@@ -94,11 +94,14 @@ const router = createRouter({
 
 
 router.beforeEach(async (to, from, next) => {
-  isAdmin = 'false'
-  if (await getCurrentUser()) {
-    const querySnap = await getDoc(query(doc(db, 'users', (await getCurrentUser()).displayName)))
-    isAdmin = querySnap.data().isAdmin
+  isAdmin = false
+  if (from.path !== '/signup') {
+    if (await getCurrentUser()) {
+      const querySnap = await getDoc(query(doc(db, 'users', (await getCurrentUser()).displayName)))
+      isAdmin = querySnap.data().isAdmin
+    }
   }
+  
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     // if (to.matched.some((record) => record.meta.requiresAdmin)) {
     //   const user = (await getCurrentUser()).displayName

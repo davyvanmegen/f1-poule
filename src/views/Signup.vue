@@ -84,6 +84,7 @@ export default {
                                 displayName: this.userName
                             })
                             this.sendUserData()
+                            alert(`Succesvol geregistreerd: ${this.userName}`)
                             this.$router.push('/feed')
                             
                         })
