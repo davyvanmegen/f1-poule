@@ -139,6 +139,7 @@ export default {
         },
         calculatePoints() {
             let lapTimeDifferenceArray = []
+            let diffObj = {}
             this.users.forEach((user) => {
                 let points = 0;
                 this.raceResults.forEach((raceResult) => {
@@ -164,20 +165,22 @@ export default {
                         }
 
                         // Compute fastest lap time difference
-                        
-                        let test = '32'
-                        //console.log(Math.abs(moment(`2:${test}.333`, 'mm:ss.SSS').diff(moment(`2:40.333`, 'mm:ss.SSS'))))
-                        
                         if (userPrediction.fastestLapMinutes && userPrediction.fastestLapSeconds && userPrediction.fastestLapMilliseconds) {
                             let lapTimeDifference = Math.abs(moment(`${userPrediction.fastestLapMinutes}:${userPrediction.fastestLapSeconds}.${userPrediction.fastestLapMilliseconds}`, 'mm:ss.SSS').diff(moment(raceResult.fastLapTime, 'mm:ss.SSS')))
-                            lapTimeDifferenceArray.push({[userPrediction.userName] : {[raceResult.raceName] : lapTimeDifference}})
+                            //lapTimeDifferenceArray.push({[userPrediction.userName] : {[raceResult.raceName] : lapTimeDifference}})
+
+
+                            if (!diffObj[raceResult.raceName]) {
+                                diffObj = Object.assign(diffObj, {[raceResult.raceName] : {}})
+                                diffObj[raceResult.raceName] = Object.assign(diffObj[raceResult.raceName], {[user.userName] : lapTimeDifference})
+                            } else {
+                                diffObj[raceResult.raceName] = Object.assign(diffObj[raceResult.raceName], {[user.userName] : lapTimeDifference})
+                            }
                         }
 
                         // Compute top 5 points
                         let cloneUserPrediction = (({ fastLab, ...o }) => o)(userPrediction) // remove b and c
                         let cloneRaceResult = (({ fastLab, ...o }) => o)(raceResult)
-                        console.log(cloneUserPrediction)
-                        console.log(cloneRaceResult)
                         let top5Points = 0
                         for (var key in cloneUserPrediction) {
                             if (cloneUserPrediction.hasOwnProperty(key)) {
@@ -198,6 +201,19 @@ export default {
                 user.points = points;
             });
             //console.log(this.raceResultsPerRace)
+            if (Object.keys(diffObj).length !== 0) {
+                for (const [race, value] of Object.entries(diffObj)) {
+                    console.log(race)
+                    var winner = Object.keys(value).reduce(function(a, b){ return value[a] < value[b] ? a : b });
+                    console.log(winner)
+
+                    let objIndex = this.users.findIndex(obj => obj.userName == winner);
+                    this.users[objIndex].points = this.users[objIndex].points + 5
+
+                    this.fastestLapTimeWinners = Object.assign(this.fastestLapTimeWinners, {[race] : {firstPlace : winner}})
+                }
+                this.latestFastestLapTimeWinner = this.fastestLapTimeWinners[this.latestRaceName].firstPlace
+            }
             this.users.sort((a, b) => b.points - a.points);
             this.isLoading = false;
             this.pushStandingsToFirebase();
