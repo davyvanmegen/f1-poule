@@ -16,7 +16,7 @@
         
         Voorspel je de coureur met de snelste raceronde dan krijg je <b>5 punten!</b>  <br><br>
 
-        En voorspel je de snelste raceronde tijd van de race dan krijg je nog eens <b>5 punten!</b>  <br><br>
+        En voorspel je de snelste raceronde tijd van de race, of zit je er het meest dichtbij, dan krijg je nog eens <b>5 punten!</b>  <br><br>
         
         Doe ook eens een gewaagde voorspelling en verdien bonus punten! Bijvoorbeeld, voorspel je 
         dat een coureur op positie 1 eindigd, maar hij staat in het kampioenschap op plaats 10, dan krijg je

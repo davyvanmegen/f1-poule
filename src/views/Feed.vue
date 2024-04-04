@@ -109,7 +109,7 @@
 <script>
 import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
-import { doc, setDoc, getDocs, query, collection } from 'firebase/firestore'
+import { doc, setDoc, getDocs, query, collection, getDoc } from 'firebase/firestore'
 import axios from 'axios'
 
 export default {
@@ -221,12 +221,24 @@ export default {
       }
     },
     async getNextRace() {
-      const response = await axios.get('https://ergast.com/api/f1/2024/next.json');
-      this.nextRace = response.data.MRData.RaceTable.Races[0];
+      let response = null
+      response = await axios.get('https://ergast.com/api/f1/2024/next.json');
+      if (response) {
+        this.nextRace = response.data.MRData.RaceTable.Races[0];
 
+        await setDoc(doc(db, 'info', 'nextRace'), {
+                      nextRace : this.nextRace,
+                  }, { merge: true })
+      } else {
+        const querySnap = await getDocs(query(collection(db, 'info')));
+        querySnap.forEach((doc) => {
+          this.nextRace = doc.data().nextRace
+        })
+
+      }
+      
       this.nextRaceDate = new Date(this.nextRace.date).toISOString().split('T')[0];
       this.currentDate = new Date().toISOString().split('T')[0];
-
       this.isFormDisabled = (this.nextRaceDate === this.currentDate);
     },
     async getCurrentPredictions() {

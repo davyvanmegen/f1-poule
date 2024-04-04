@@ -1,5 +1,9 @@
 <template>
-    <h2>Puntentelling na {{ this.latestRaceName }}</h2>
+    
+    <h3>Puntentelling na {{ this.latestRaceName }}</h3>
+    <h5>Winnaar van het voorspellen van de snelste raceronde tijd bij de {{ this.latestRaceName }}:</h5>
+    <p v-if="fastestLapTimeWinner"> {{ fastestLapTimeWinner }} </p>
+    <p v-else> <i>Geen voorspellingen gedaan...</i> </p>
     <table class="table">
         <thead class="table-light">
             <tr>
@@ -52,7 +56,8 @@ export default {
             latestRace: null,
             usersPoints: [],
             preResults: null,
-            latestRaceName: null
+            latestRaceName: null,
+            fastestLapTimeWinner: ''
         }
     },
     async created () {
@@ -85,6 +90,9 @@ export default {
                             points: value
                         });
                     }
+                }
+                if (this.preResults.fastestLapTimeWinners) {
+                    this.fastestLapTimeWinner = this.preResults.fastestLapTimeWinners[this.latestRaceName].firstPlace
                 }
                 this.users.sort((a, b) => b.points - a.points);
                 this.isLoading = false;
@@ -121,6 +129,7 @@ export default {
                     position4: race.Results[3].Driver.familyName,
                     position5: race.Results[4].Driver.familyName,
                     fastLab: race.Results.find(item => item.FastestLap.rank === '1').Driver.familyName,
+                    fastLapTime : race.Results.find(item => item.FastestLap.rank === '1').FastestLap.Time.time,
                     currentStandings
                 });
             }
@@ -138,7 +147,6 @@ export default {
             });
         },
         calculatePoints() {
-            let lapTimeDifferenceArray = []
             let diffObj = {}
             this.users.forEach((user) => {
                 let points = 0;
@@ -232,6 +240,11 @@ export default {
             await setDoc(doc(db, 'standings', 'allStandings'), {
                 [this.latestRace.raceName] : userPoints
             }, { merge: true })
+            if (this.fastestLapTimeWinners) {
+                await setDoc(doc(db, 'standings', 'allStandings'), {
+                    fastestLapTimeWinners : this.fastestLapTimeWinners
+                }, { merge: true })
+            }
             for (let i = 0; i < this.raceResultsPerRace.length; i++) {
                 let grandPrixName = Object.keys(this.raceResultsPerRace[i])[0]
                 let testObject = this.raceResultsPerRace[i][grandPrixName]

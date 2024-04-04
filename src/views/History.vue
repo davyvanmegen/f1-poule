@@ -71,7 +71,7 @@
                             <th scope="row">FLT</th>
                             <td v-if="prediction.fastestLapMinutes">{{ prediction.fastestLapMinutes }}:{{ prediction.fastestLapSeconds }}.{{ prediction.fastestLapMilliseconds }} </td>
                             <td v-else></td>
-                            <td></td>
+                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLapTime }}</td>
                             </tr>
                             <tr>
                             <th scope="row">Punten</th>
@@ -183,7 +183,7 @@
                                 <th scope="row">FLT</th>
                                 <td v-if="prediction.fastestLapMinutes">{{ prediction.fastestLapMinutes }}:{{ prediction.fastestLapSeconds }}.{{ prediction.fastestLapMilliseconds }} </td>
                                 <td v-else></td>
-                                <td></td>
+                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLapTime }}</td>
                                 </tr>
                                 <tr>
                                 <th scope="row">Punten</th>
@@ -292,6 +292,7 @@ export default {
                     position4: race.Results[3].Driver.familyName,
                     position5: race.Results[4].Driver.familyName,
                     fastLab: race.Results.find(item => item.FastestLap.rank === '1').Driver.familyName,
+                    fastLapTime : race.Results.find(item => item.FastestLap.rank === '1').FastestLap.Time.time,
                     currentStandings
                 });
             }
