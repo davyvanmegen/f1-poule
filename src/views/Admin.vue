@@ -109,7 +109,6 @@ export default {
             });
         },
         calculatePoints() {
-            let lapTimeDifferenceArray = []
             let diffObj = {}
             this.users.forEach((user) => {
                 let points = 0;
@@ -205,6 +204,11 @@ export default {
             await setDoc(doc(db, 'standings', 'allStandings'), {
                 [this.latestRace.raceName] : userPoints
             }, { merge: true })
+            if (this.fastestLapTimeWinners) {
+                await setDoc(doc(db, 'standings', 'allStandings'), {
+                    fastestLapTimeWinners : this.fastestLapTimeWinners
+                }, { merge: true })
+            }
             for (let i = 0; i < this.raceResultsPerRace.length; i++) {
                 let grandPrixName = Object.keys(this.raceResultsPerRace[i])[0]
                 let testObject = this.raceResultsPerRace[i][grandPrixName]
