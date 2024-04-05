@@ -1,6 +1,8 @@
 <template>
+
   <h3>Welkom {{ displayName }}</h3>
-  <h6>Verstuur je voorspelling voor de <b>{{ nextRace.raceName }}</b></h6>
+  <h6>Verstuur je voorspelling voor de <b> {{ nextRace.raceName }} </b> tot de sluiting:</h6>
+  <Counter/>
   <hr />
   <div class="row">
     <div class="col-md-4 offset-md-0">
@@ -111,8 +113,12 @@ import { auth } from '../firebase/init.js'
 import db from '../firebase/init.js'
 import { doc, setDoc, getDocs, query, collection, getDoc } from 'firebase/firestore'
 import axios from 'axios'
+import Counter from '../components/Counter.vue'
 
 export default {
+  components: {
+    Counter
+  },
   data() {
     return {
       displayName: '',
@@ -186,7 +192,6 @@ export default {
           this.userNextPredictions.push(data[this.nextRace.raceName])
         }
       })
-      console.log(this.userNextPredictions)
     },
     async sendData() {
       if (this.nextRaceDate !== this.currentDate) {
@@ -237,7 +242,7 @@ export default {
 
       }
       
-      this.nextRaceDate = new Date(this.nextRace.date).toISOString().split('T')[0];
+      this.nextRaceDate = new Date(this.nextRace.date+'T00:00:00').toISOString().split('T')[0];
       this.currentDate = new Date().toISOString().split('T')[0];
       this.isFormDisabled = (this.nextRaceDate === this.currentDate);
     },

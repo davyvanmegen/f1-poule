@@ -59,6 +59,7 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import DriverCard from './DriverCard.vue';
+import Counter from './Counter.vue'
 import axios from 'axios';
 import UserCardSkeleton from './UserCardSkeleton.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -72,7 +73,8 @@ export default {
   components: {
     HelloWorld,
     DriverCard,
-    UserCardSkeleton
+    UserCardSkeleton,
+    Counter
   },
   data() {
     return {

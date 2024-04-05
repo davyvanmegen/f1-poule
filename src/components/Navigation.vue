@@ -12,7 +12,7 @@
             <router-link class="nav-link" to="/">Home</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/standings">Uitslagen</router-link>
+            <router-link class="nav-link" to="/standings">Tussenstand</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/history">Historie</router-link>

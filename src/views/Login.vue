@@ -44,7 +44,7 @@ export default {
         login() {
             signInWithEmailAndPassword(auth, this.email, this.password)
                 .then(() => {
-                    this.$router.push('/')
+                    this.$router.push('/feed')
                 })
                 .catch((error) => {
                     switch (error.code) {
