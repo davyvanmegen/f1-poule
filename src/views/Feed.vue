@@ -194,9 +194,14 @@ export default {
       })
     },
     async sendData() {
-      if (this.nextRaceDate !== this.currentDate) {
+      if (this.nextRaceDate > this.currentDate) {
         if (this.fastestLapSeconds.length === 1) {
           this.fastestLapSeconds = "0".concat(this.fastestLapSeconds)
+        }
+        if (this.fastestLapMilliseconds.length === 1) {
+          this.fastestLapMilliseconds = this.fastestLapMilliseconds+"00"
+        } else if (this.fastestLapMilliseconds.length === 2) {
+          this.fastestLapMilliseconds = this.fastestLapMilliseconds+"0"
         }
         // await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
         await setDoc(doc(db, 'predictions', auth.currentUser.displayName), {
@@ -216,7 +221,7 @@ export default {
         alert('Bedankt voor je voorspelling!')
         window.location.reload()
       } else {
-        alert(`You are too late to give and/or change your prediction for${this.nextRace}. Come back tomorrow to give your prediction for the next race.`)
+        alert(`You are too late to give and/or change your prediction for the ${this.nextRace.raceName}. Come back tomorrow to give your prediction for the next race.`)
       }
     },
 
@@ -241,11 +246,10 @@ export default {
         })
 
       }
-      
-      this.nextRaceDate = new Date(this.nextRace.date).toISOString().split('T')[0];
-      console.log(this.nextRaceDate)
-      this.currentDate = new Date().toISOString().split('T')[0];
-      this.isFormDisabled = (this.nextRaceDate === this.currentDate);
+
+      this.nextRaceDate = new Date(this.nextRace.date+'T00:00:00')
+      this.currentDate = new Date()
+      this.isFormDisabled = (this.nextRaceDate < this.currentDate);
     },
     async getCurrentPredictions() {
       const querySnap = await getDocs(query(collection(db, 'predictions')));
