@@ -242,7 +242,8 @@ export default {
 
       }
       
-      this.nextRaceDate = new Date(this.nextRace.date+'T00:00:00').toISOString().split('T')[0];
+      this.nextRaceDate = new Date(this.nextRace.date).toISOString().split('T')[0];
+      console.log(this.nextRaceDate)
       this.currentDate = new Date().toISOString().split('T')[0];
       this.isFormDisabled = (this.nextRaceDate === this.currentDate);
     },
