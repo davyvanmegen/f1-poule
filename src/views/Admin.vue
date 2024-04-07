@@ -1,6 +1,43 @@
 <template>
     <h1>Admin page</h1>
     <h3>Welkom {{ userName }}</h3>
+    <h6>{{ raceName }}</h6>
+    <p>{{ testObj }}</p>
+    <h5>Verzend race resultaten voor geselecteerde race</h5>
+    <input class="form-control" placeholder="Race Name" v-model="raceName" style="max-width: 415px;" type="string">
+    <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="testObj['fastLapTime']" style="max-width: 415px;" type="string">
+    <div class="col-md-4 offset-md-0">
+        <label>Fastest Lap</label>
+        <select class="form-select" aria-label="Default select example" v-model="testObj['fastLap']" :disabled="isFormDisabled">
+            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+    </div>
+    <div v-for="(item, index) in currentDrivers" :key=item>
+    <div class="row">
+        <div class="col-md-4 offset-md-0">
+        <label>Plek {{ index + 1 }}</label>
+        <select class="form-select" aria-label="Default select example" v-model="testObj['position'+(index+1)]" :disabled="isFormDisabled">
+            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary">Verzend race resultaten</button>
+    <hr>
+    <h5>Verzend stand in wk na geselecteerde race</h5>
+    <input class="form-control" placeholder="Race Name" v-model="raceName" style="max-width: 415px;" type="string" maxlength="1">
+    <div v-for="(item, index) in currentDrivers" :key=item>
+    <div class="row">
+        <div class="col-md-4 offset-md-0">
+        <label>Plek {{ index + 1 }}</label>
+        <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
+            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+        </select>
+        </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary">Verzend stand</button>
+    <hr>
     <button type="button" class="btn btn-primary" @click="fetchData">Bereken Punten</button>
     <button type="button" class="btn btn-primary" @click="pushStandingsToFirebase">Push to firebase</button>
     <h2>Winner of the fastest laptime at the {{ latestRaceName }}:</h2>
@@ -47,7 +84,32 @@ export default {
             isLoading: true,
             raceResultsPerRace : [],
             fastestLapTimeWinners : {},
-            latestFastestLapTimeWinner: ''
+            latestFastestLapTimeWinner: '',
+            currentDrivers: [
+            'Verstappen',
+            'Pérez',
+            'Hamilton',
+            'Alonso',
+            'Leclerc',
+            'Norris',
+            'Sainz',
+            'Russell',
+            'Piastri',
+            'Strol',
+            'Gasly',
+            'Ocon',
+            'Albon',
+            'Tsunoda',
+            'Bottas',
+            'Hülkenberg',
+            'Ricciardo',
+            'Zhou',
+            'Magnussen',
+            'Lawson',
+            'Sargeant',
+            ],
+            raceName: '',
+            testObj: {}
         }
     },
     async mounted () {
