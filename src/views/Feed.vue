@@ -1,5 +1,5 @@
 <template>
-
+<div v-if="!isLoading">
   <h3>Welkom {{ displayName }}</h3>
   <h6>Verstuur je voorspelling voor de <b> {{ nextRace.raceName }} </b> tot de sluiting:</h6>
   <Counter/>
@@ -106,6 +106,10 @@
       </div>
     </div>
   </div>
+</div>
+<div v-else-if="isLoading" class="spinner-border m-5" role="status">
+  <span class="sr-only"></span>
+</div>
 </template>
 
 <script>
@@ -166,18 +170,20 @@ export default {
       userArray: [],
       userNextPredictions: [],
       nextRaceDate: '',
-      currentDate: ''
+      currentDate: '',
+      isLoading: true
     }
   },
 
   created() {
     this.displayCurrentUser()
 
-    this.getNextRace().then(() => {
-      this.getCurrentPredictions().then(() => {
-        this.fetchAllCurrentUserData()
-      })
-    })
+    // this.getNextRace().then(() => {
+    //   this.getCurrentPredictions().then(() => {
+    //     this.fetchAllCurrentUserData()
+    //   })
+    // })
+    this.getNextRace()
   },
   methods: {
     async fetchAllCurrentUserData() {
@@ -231,25 +237,42 @@ export default {
       }
     },
     async getNextRace() {
-      let response = null
-      response = await axios.get('https://ergast.com/api/f1/2024/next.json');
-      if (response) {
-        this.nextRace = response.data.MRData.RaceTable.Races[0];
+      //response = await axios.get('https://ergast.com/api/f1/2024/next.json');
 
-        await setDoc(doc(db, 'info', 'nextRace'), {
+      axios.get('https://ergast.com/api/f1/2024/next.json', {
+        timeout: 3000
+      }
+      )
+      .then(response => {
+        this.nextRace = response.data.MRData.RaceTable.Races[0];
+        this.nextRaceDate = new Date(this.nextRace.date+'T00:00:00')
+        this.currentDate = new Date()
+        this.isFormDisabled = (this.nextRaceDate < this.currentDate);
+        this.setNextRace()
+        this.getCurrentPredictions()
+        this.fetchAllCurrentUserData()
+        this.isLoading = false
+      })
+      .catch(error => {
+        console.log('error')
+        getDocs(query(collection(db, 'info'))).then((querySnap) => {
+          querySnap.forEach((doc) => {
+          this.nextRace = doc.data().nextRace
+          this.nextRaceDate = new Date(this.nextRace.date+'T00:00:00')
+          this.currentDate = new Date()
+          this.isFormDisabled = (this.nextRaceDate < this.currentDate);
+          this.getCurrentPredictions()
+          this.fetchAllCurrentUserData()
+          this.setNextRace()
+          this.isLoading = false
+          })
+        })
+      })
+    },
+    async setNextRace() {
+      await setDoc(doc(db, 'info', 'nextRace'), {
                       nextRace : this.nextRace,
                   }, { merge: true })
-      } else {
-        const querySnap = await getDocs(query(collection(db, 'info')));
-        querySnap.forEach((doc) => {
-          this.nextRace = doc.data().nextRace
-        })
-
-      }
-
-      this.nextRaceDate = new Date(this.nextRace.date+'T00:00:00')
-      this.currentDate = new Date()
-      this.isFormDisabled = (this.nextRaceDate < this.currentDate);
     },
     async getCurrentPredictions() {
       const querySnap = await getDocs(query(collection(db, 'predictions')));
