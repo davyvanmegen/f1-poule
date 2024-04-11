@@ -200,6 +200,7 @@ export default {
       })
     },
     async sendData() {
+      this.currentDate = new Date()
       if (this.nextRaceDate > this.currentDate) {
         if (this.fastestLapSeconds.length === 1) {
           this.fastestLapSeconds = "0".concat(this.fastestLapSeconds)
