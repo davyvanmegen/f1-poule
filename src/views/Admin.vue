@@ -2,41 +2,47 @@
     <h1>Admin page</h1>
     <h3>Welkom {{ userName }}</h3>
     <h6>{{ raceName }}</h6>
-    <p>{{ testObj }}</p>
+    <p>{{ raceResult }}</p>
     <h5>Verzend race resultaten voor geselecteerde race</h5>
+    <label>Race Name</label>
     <input class="form-control" placeholder="Race Name" v-model="raceName" style="max-width: 415px;" type="string">
-    <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="testObj['fastLapTime']" style="max-width: 415px;" type="string">
+    <label>Race Number</label>
+    <input class="form-control" placeholder="Race Number" v-model="raceResult['raceNumber']" style="max-width: 415px;" type="string">
+    <label>Fastest Lap Time</label>
+    <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="raceResult['fastLapTime']" style="max-width: 415px;" type="string">
     <div class="col-md-4 offset-md-0">
         <label>Fastest Lap</label>
-        <select class="form-select" aria-label="Default select example" v-model="testObj['fastLap']" :disabled="isFormDisabled">
+        <select class="form-select" aria-label="Default select example" v-model="raceResult['fastLap']" :disabled="isFormDisabled">
             <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
         </select>
     </div>
-    <div v-for="(item, index) in currentDrivers" :key=item>
+    <div v-for="(item, index) in 5" :key=item>
     <div class="row">
         <div class="col-md-4 offset-md-0">
         <label>Plek {{ index + 1 }}</label>
-        <select class="form-select" aria-label="Default select example" v-model="testObj['position'+(index+1)]" :disabled="isFormDisabled">
+        <select class="form-select" aria-label="Default select example" v-model="raceResult['position'+(index+1)]" :disabled="isFormDisabled">
             <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
         </select>
         </div>
         </div>
     </div>
-    <button type="button" class="btn btn-primary">Verzend race resultaten</button>
+    <button type="button" class="btn btn-primary" @click="pushRaceResultsToFirebase">Verzend race resultaten</button>
     <hr>
+    <h6>{{ raceNameChampionshipStandings }}</h6>
+    <p>{{ championshipStandings }}</p>
     <h5>Verzend stand in wk na geselecteerde race</h5>
-    <input class="form-control" placeholder="Race Name" v-model="raceName" style="max-width: 415px;" type="string" maxlength="1">
+    <input class="form-control" placeholder="Race Name" v-model="raceNameChampionshipStandings" style="max-width: 415px;" type="string">
     <div v-for="(item, index) in currentDrivers" :key=item>
     <div class="row">
         <div class="col-md-4 offset-md-0">
         <label>Plek {{ index + 1 }}</label>
-        <select class="form-select" aria-label="Default select example" v-model="pos1" :disabled="isFormDisabled">
+        <select class="form-select" aria-label="Default select example" v-model="championshipStandings['position'+(index+1)]">
             <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
         </select>
         </div>
         </div>
     </div>
-    <button type="button" class="btn btn-primary">Verzend stand</button>
+    <button type="button" class="btn btn-primary" @click="pushChampionshipStandingsToFirebase">Verzend stand</button>
     <hr>
     <button type="button" class="btn btn-primary" @click="fetchData">Bereken Punten</button>
     <button type="button" class="btn btn-primary" @click="pushStandingsToFirebase">Push to firebase</button>
@@ -78,6 +84,8 @@ export default {
             userName: '',
             users: [],
             raceResults: [],
+            raceResult: {},
+            championshipStandings: {},
             latestRace: null,
             latestRaceName: '',
             usersPoints: [],
@@ -109,10 +117,12 @@ export default {
             'Sargeant',
             ],
             raceName: '',
-            testObj: {}
+            raceNameChampionshipStandings: '',
+            raceNumber: ''
         }
     },
     async mounted () {
+        this.fetchF1DataFirebase()
         this.getUserName();
     },
     methods: {
@@ -131,6 +141,31 @@ export default {
                     this.fetchData();
                 }
             })
+        },
+        async fetchF1DataFirebase() {
+            const customResults = [];
+            const querySnap = await getDocs(query(collection(db, 'results')));
+            querySnap.forEach((doc) => {
+                console.log(doc.data())
+                let object = doc.data()
+                for (var key in object) {
+                    if (object.hasOwnProperty(key)) {
+                        customResults.push({
+                            raceName: key,
+                            raceNumber: object[key].raceNumber,
+                            position1: object[key].position1,
+                            position2: object[key].position2,
+                            position3: object[key].position3,
+                            position4: object[key].position4,
+                            position5: object[key].position5,
+                            fastLap: object[key].fastLap,
+                            fastLapTime : object[key].fastLapTime,
+                            //currentStandings
+                        });
+                    }
+                }
+            });
+            console.log(customResults)
         },
         async fetchF1Data() {
             const results = await axios.get(`https://ergast.com/api/f1/2024/results.json?limit=1000`);
@@ -279,8 +314,20 @@ export default {
                     [userNameTest] : testObject[userNameTest]
                 }, { merge: true })
             }
+        },
+        async pushRaceResultsToFirebase() {
+            await setDoc(doc(db, 'results', 'allRaceResults'), {
+                [this.raceName]: this.raceResult
+            }, { merge: true });
+            alert('Succesfully pushed race results to Firebase')
+        },
+        async pushChampionshipStandingsToFirebase() {
+            await setDoc(doc(db, 'results', 'championshipStandings'), {
+                [this.raceNameChampionshipStandings]: this.championshipStandings
+        }, { merge: true });
+        alert('Succesfully pushed championshipstandings to Firebase')
         }
-    },
+    }
 }
     
 </script>
