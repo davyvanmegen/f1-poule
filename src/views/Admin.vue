@@ -12,7 +12,7 @@
     <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="raceResult['fastLapTime']" style="max-width: 415px;" type="string">
     <div class="col-md-4 offset-md-0">
         <label>Fastest Lap</label>
-        <select class="form-select" aria-label="Default select example" v-model="raceResult['fastLap']" :disabled="isFormDisabled">
+        <select class="form-select" aria-label="Default select example" v-model="raceResult['fastLap']">
             <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
         </select>
     </div>
@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-md-4 offset-md-0">
         <label>Plek {{ index + 1 }}</label>
-        <select class="form-select" aria-label="Default select example" v-model="raceResult['position'+(index+1)]" :disabled="isFormDisabled">
+        <select class="form-select" aria-label="Default select example" v-model="raceResult['position'+(index+1)]">
             <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
         </select>
         </div>
@@ -115,6 +115,7 @@ export default {
             'Magnussen',
             'Lawson',
             'Sargeant',
+            'Bearman',
             ],
             raceName: '',
             raceNameChampionshipStandings: '',
@@ -122,7 +123,7 @@ export default {
         }
     },
     async mounted () {
-        this.fetchF1DataFirebase()
+        //this.fetchF1DataFirebase()
         this.getUserName();
     },
     methods: {
@@ -131,7 +132,7 @@ export default {
         },
         fetchData() {
             console.log('hallo')
-            this.fetchF1Data().then((result) => {
+            this.fetchF1DataFirebase().then((result) => {
                 if (result.length !== 0) {
                     this.raceResults = result;
                     this.fetchUsersData().then(() => {
@@ -144,28 +145,38 @@ export default {
         },
         async fetchF1DataFirebase() {
             const customResults = [];
-            const querySnap = await getDocs(query(collection(db, 'results')));
-            querySnap.forEach((doc) => {
-                console.log(doc.data())
-                let object = doc.data()
-                for (var key in object) {
-                    if (object.hasOwnProperty(key)) {
-                        customResults.push({
-                            raceName: key,
-                            raceNumber: object[key].raceNumber,
-                            position1: object[key].position1,
-                            position2: object[key].position2,
-                            position3: object[key].position3,
-                            position4: object[key].position4,
-                            position5: object[key].position5,
-                            fastLap: object[key].fastLap,
-                            fastLapTime : object[key].fastLapTime,
-                            //currentStandings
-                        });
+            const querySnap = await getDoc(query(doc(db, 'results', 'allRaceResults')));
+            let object = querySnap.data()
+            let counter = 0
+                    for (var key in object) {
+                        counter = counter + 1
+                        let currentStandings = null;
+                        const querySnap2 = await getDoc(query(doc(db, 'results', 'championshipStandings')))
+                        let object2 = querySnap2.data()
+                        if (object2[key]) {
+                            console.log('JA')
+                            console.log(object2[key])
+                            currentStandings = object2[key]
+                        }
+                        if (object.hasOwnProperty(key)) {
+                            customResults.push({
+                                raceName: key,
+                                raceNumber: object[key].raceNumber,
+                                position1: object[key].position1,
+                                position2: object[key].position2,
+                                position3: object[key].position3,
+                                position4: object[key].position4,
+                                position5: object[key].position5,
+                                fastLap: object[key].fastLap,
+                                fastLapTime : object[key].fastLapTime,
+                                currentStandings
+                            });
+                        }
                     }
-                }
-            });
+            this.latestRaceName = customResults.find(o => o.raceNumber === `${counter}`).raceName;
+
             console.log(customResults)
+            return customResults;
         },
         async fetchF1Data() {
             const results = await axios.get(`https://ergast.com/api/f1/2024/results.json?limit=1000`);
@@ -217,9 +228,10 @@ export default {
                             if (userPrediction[`position${posNr}`] == raceResult[`position${posNr}`]) {
                                 let bonusPoints = 0;
                                 if (raceResult.currentStandings !== null) {
-                                    const currentPos = raceResult.currentStandings
-                                        .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
-                                    bonusPoints = Math.abs(currentPos);
+                                    // const currentPos = raceResult.currentStandings
+                                    //     .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
+                                    // bonusPoints = Math.abs(currentPos);
+                                    //console.log(currentPos)
                                 }
                                 points += (bonusPoints + 2);
                                 pointsLoop += bonusPoints + 2
@@ -275,7 +287,7 @@ export default {
                 for (const [race, value] of Object.entries(diffObj)) {
 
                     var winner = Object.keys(value).reduce(function(a, b){ return value[a] < value[b] ? a : b });
-
+                    console.log(winner)
                     let objIndex = this.users.findIndex(obj => obj.userName == winner);
                     this.users[objIndex].points = this.users[objIndex].points + 5
 
