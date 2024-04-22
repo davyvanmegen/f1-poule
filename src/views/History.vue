@@ -62,10 +62,10 @@
                             </tr>
                             <tr>
                             <th scope="row">FL</th>
-                            <td v-if="prediction.fastLab === raceResults.find(o => o.raceName === key).fastLab" style="color:Green;">{{ prediction.fastLab }} </td>
-                            <td v-else-if="prediction.fastLab !== raceResults.find(o => o.raceName === key).fastLab" style="color:tomato;">{{ prediction.fastLab }} </td>
+                            <td v-if="prediction.fastLab === raceResults.find(o => o.raceName === key).fastLap" style="color:Green;">{{ prediction.fastLab }} </td>
+                            <td v-else-if="prediction.fastLab !== raceResults.find(o => o.raceName === key).fastLap" style="color:tomato;">{{ prediction.fastLab }} </td>
                             <td v-else>{{ prediction.fastLab }} </td>
-                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLab }}</td>
+                            <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLap }}</td>
                             </tr>
                             <tr>
                             <th scope="row">FLT</th>
@@ -174,10 +174,10 @@
                                 </tr>
                                 <tr>
                                 <th scope="row">FL</th>
-                                <td v-if="prediction.fastLab === raceResults.find(o => o.raceName === key).fastLab" style="color:Green;">{{ prediction.fastLab }} </td>
-                                <td v-else-if="prediction.fastLab !== raceResults.find(o => o.raceName === key).fastLab" style="color:tomato;">{{ prediction.fastLab }} </td>
+                                <td v-if="prediction.fastLab === raceResults.find(o => o.raceName === key).fastLap" style="color:Green;">{{ prediction.fastLab }} </td>
+                                <td v-else-if="prediction.fastLab !== raceResults.find(o => o.raceName === key).fastLap" style="color:tomato;">{{ prediction.fastLab }} </td>
                                 <td v-else>{{ prediction.fastLab }} </td>
-                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLab }}</td>
+                                <td v-if="raceResults.find(o => o.raceName === key)"> {{ raceResults.find(o => o.raceName === key).fastLap }}</td>
                                 </tr>
                                 <tr>
                                 <th scope="row">FLT</th>
@@ -237,8 +237,7 @@
 
 <script>
 import db from '../firebase/init.js'
-import { query, collection, getDocs, setDoc, doc } from 'firebase/firestore'
-import axios from 'axios'
+import { query, collection, getDocs, getDoc, doc } from 'firebase/firestore'
 
 export default {
     data () {
@@ -252,7 +251,6 @@ export default {
     mounted() {
         this.fetchUsersData()
         this.fetchF1Data()
-        //this.calculatePoints()
     },
     methods: {
         async fetchUsersData() {
@@ -273,66 +271,35 @@ export default {
             });
         },
         async fetchF1Data() {
-            const results = await axios.get(`https://ergast.com/api/f1/2024/results.json?limit=1000`);
-            const races = results.data.MRData.RaceTable.Races
             const customResults = [];
-            for (let index = 0; index < races.length; index++) {
-                const race = races[index];
-                let driverStandings = null;
+            const querySnap = await getDoc(query(doc(db, 'results', 'allRaceResults')));
+            let object = querySnap.data()
+            let counter = 0
+            for (var key in object) {
+                counter = counter + 1
                 let currentStandings = null;
-                if (index !== 0) {
-                    driverStandings = await axios.get(`https://ergast.com/api/f1/2024/${index}/driverStandings.json`);
-                    currentStandings = driverStandings.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+                const querySnap2 = await getDoc(query(doc(db, 'results', 'championshipStandings')))
+                let object2 = querySnap2.data()
+                if (object2[key]) {
+                    currentStandings = object2[key]
                 }
-                customResults.push({
-                    raceName: race.raceName,
-                    position1: race.Results[0].Driver.familyName,
-                    position2: race.Results[1].Driver.familyName,
-                    position3: race.Results[2].Driver.familyName,
-                    position4: race.Results[3].Driver.familyName,
-                    position5: race.Results[4].Driver.familyName,
-                    fastLab: race.Results.find(item => item.FastestLap.rank === '1').Driver.familyName,
-                    fastLapTime : race.Results.find(item => item.FastestLap.rank === '1').FastestLap.Time.time,
-                    currentStandings
-                });
+                if (object.hasOwnProperty(key)) {
+                    customResults.push({
+                        raceName: key,
+                        raceNumber: object[key].raceNumber,
+                        position1: object[key].position1,
+                        position2: object[key].position2,
+                        position3: object[key].position3,
+                        position4: object[key].position4,
+                        position5: object[key].position5,
+                        fastLap: object[key].fastLap,
+                        fastLapTime : object[key].fastLapTime,
+                        currentStandings
+                    });
+                }
             }
-            this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0];
-            this.raceResults = customResults;
 
-            //let obj = this.raceResults.find(o => o.raceName === 'Australian Grand Prix');
-            //console.log(obj)
-        },
-        calculatePoints() {
-            this.users.forEach((user) => {
-                let points = 0;
-                this.raceResults.forEach((raceResult) => {
-                    const userPrediction = user.predictions[raceResult.raceName];
-                    if (userPrediction) {
-                        for (let posNr = 1; posNr <= 5; posNr++) {
-                            if (userPrediction[`position${posNr}`] == raceResult[`position${posNr}`]) {
-                                let bonusPoints = 0;
-                                if (raceResult.currentStandings !== null) {
-                                    const currentPos = raceResult.currentStandings
-                                        .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
-                                    bonusPoints = Math.abs(currentPos);
-                                }
-                                points += (bonusPoints + 3);
-                            }
-                        }
-                        if (userPrediction.fastLab == raceResult.fastLab) {
-                            points += 5;
-                        }
-                    }
-                    console.log(points)
-                });
-                user.points = points;
-            });
-            this.users.sort((a, b) => b.points - a.points);
-            this.isLoading = false;
-            console.log(this.raceResults)
-        },
-        matchData(){
-               
+            this.raceResults = customResults;
         }
     }
 }

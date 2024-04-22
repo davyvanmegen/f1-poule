@@ -7,9 +7,11 @@
     <label>Race Name</label>
     <input class="form-control" placeholder="Race Name" v-model="raceName" style="max-width: 415px;" type="string">
     <label>Race Number</label>
-    <input class="form-control" placeholder="Race Number" v-model="raceResult['raceNumber']" style="max-width: 415px;" type="string">
+    <input class="form-control" placeholder="Race Number" v-model="raceResult['raceNumber']" style="max-width: 415px;"
+        type="string">
     <label>Fastest Lap Time</label>
-    <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="raceResult['fastLapTime']" style="max-width: 415px;" type="string">
+    <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="raceResult['fastLapTime']"
+        style="max-width: 415px;" type="string">
     <div class="col-md-4 offset-md-0">
         <label>Fastest Lap</label>
         <select class="form-select" aria-label="Default select example" v-model="raceResult['fastLap']">
@@ -17,13 +19,14 @@
         </select>
     </div>
     <div v-for="(item, index) in 5" :key=item>
-    <div class="row">
-        <div class="col-md-4 offset-md-0">
-        <label>Plek {{ index + 1 }}</label>
-        <select class="form-select" aria-label="Default select example" v-model="raceResult['position'+(index+1)]">
-            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        </div>
+        <div class="row">
+            <div class="col-md-4 offset-md-0">
+                <label>Plek {{ index + 1 }}</label>
+                <select class="form-select" aria-label="Default select example"
+                    v-model="raceResult['position' + (index + 1)]">
+                    <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+                </select>
+            </div>
         </div>
     </div>
     <button type="button" class="btn btn-primary" @click="pushRaceResultsToFirebase">Verzend race resultaten</button>
@@ -31,15 +34,17 @@
     <h6>{{ raceNameChampionshipStandings }}</h6>
     <p>{{ championshipStandings }}</p>
     <h5>Verzend stand in wk na geselecteerde race</h5>
-    <input class="form-control" placeholder="Race Name" v-model="raceNameChampionshipStandings" style="max-width: 415px;" type="string">
+    <input class="form-control" placeholder="Race Name" v-model="raceNameChampionshipStandings"
+        style="max-width: 415px;" type="string">
     <div v-for="(item, index) in currentDrivers" :key=item>
-    <div class="row">
-        <div class="col-md-4 offset-md-0">
-        <label>Plek {{ index + 1 }}</label>
-        <select class="form-select" aria-label="Default select example" v-model="championshipStandings['position'+(index+1)]">
-            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-        </div>
+        <div class="row">
+            <div class="col-md-4 offset-md-0">
+                <label>Plek {{ index + 1 }}</label>
+                <select class="form-select" aria-label="Default select example"
+                    v-model="championshipStandings['position' + (index + 1)]">
+                    <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+                </select>
+            </div>
         </div>
     </div>
     <button type="button" class="btn btn-primary" @click="pushChampionshipStandingsToFirebase">Verzend stand</button>
@@ -62,7 +67,7 @@
         <template v-if="!isLoading">
             <tbody v-for="(user, index) in users" :key="index">
                 <tr>
-                    <td scope="row">{{ index+1 }}</td>
+                    <td scope="row">{{ index + 1 }}</td>
                     <td>{{ user.userName }}</td>
                     <td>{{ user.points }}</td>
                 </tr>
@@ -79,8 +84,8 @@ import axios from 'axios'
 import moment from 'moment'
 
 export default {
-    data () {
-        return{
+    data() {
+        return {
             userName: '',
             users: [],
             raceResults: [],
@@ -90,40 +95,40 @@ export default {
             latestRaceName: '',
             usersPoints: [],
             isLoading: true,
-            raceResultsPerRace : [],
-            fastestLapTimeWinners : {},
+            raceResultsPerRace: [],
+            fastestLapTimeWinners: {},
             latestFastestLapTimeWinner: '',
             currentDrivers: [
-            'Verstappen',
-            'Pérez',
-            'Hamilton',
-            'Alonso',
-            'Leclerc',
-            'Norris',
-            'Sainz',
-            'Russell',
-            'Piastri',
-            'Strol',
-            'Gasly',
-            'Ocon',
-            'Albon',
-            'Tsunoda',
-            'Bottas',
-            'Hülkenberg',
-            'Ricciardo',
-            'Zhou',
-            'Magnussen',
-            'Lawson',
-            'Sargeant',
-            'Bearman',
+                'Verstappen',
+                'Pérez',
+                'Hamilton',
+                'Alonso',
+                'Leclerc',
+                'Norris',
+                'Sainz',
+                'Russell',
+                'Piastri',
+                'Strol',
+                'Gasly',
+                'Ocon',
+                'Albon',
+                'Tsunoda',
+                'Bottas',
+                'Hülkenberg',
+                'Ricciardo',
+                'Zhou',
+                'Magnussen',
+                'Lawson',
+                'Sargeant',
+                'Bearman',
             ],
             raceName: '',
             raceNameChampionshipStandings: '',
-            raceNumber: ''
+            raceNumber: '',
+            latestRaceNumber: null
         }
     },
-    async mounted () {
-        //this.fetchF1DataFirebase()
+    async mounted() {
         this.getUserName();
     },
     methods: {
@@ -131,7 +136,6 @@ export default {
             this.userName = auth.currentUser.displayName
         },
         fetchData() {
-            console.log('hallo')
             this.fetchF1DataFirebase().then((result) => {
                 if (result.length !== 0) {
                     this.raceResults = result;
@@ -148,62 +152,32 @@ export default {
             const querySnap = await getDoc(query(doc(db, 'results', 'allRaceResults')));
             let object = querySnap.data()
             let counter = 0
-                    for (var key in object) {
-                        counter = counter + 1
-                        let currentStandings = null;
-                        const querySnap2 = await getDoc(query(doc(db, 'results', 'championshipStandings')))
-                        let object2 = querySnap2.data()
-                        if (object2[key]) {
-                            console.log('JA')
-                            console.log(object2[key])
-                            currentStandings = object2[key]
-                        }
-                        if (object.hasOwnProperty(key)) {
-                            customResults.push({
-                                raceName: key,
-                                raceNumber: object[key].raceNumber,
-                                position1: object[key].position1,
-                                position2: object[key].position2,
-                                position3: object[key].position3,
-                                position4: object[key].position4,
-                                position5: object[key].position5,
-                                fastLap: object[key].fastLap,
-                                fastLapTime : object[key].fastLapTime,
-                                currentStandings
-                            });
-                        }
-                    }
-            this.latestRaceName = customResults.find(o => o.raceNumber === `${counter}`).raceName;
-
-            console.log(customResults)
-            return customResults;
-        },
-        async fetchF1Data() {
-            const results = await axios.get(`https://ergast.com/api/f1/2024/results.json?limit=1000`);
-            const races = results.data.MRData.RaceTable.Races
-            const customResults = [];
-            for (let index = 0; index < races.length; index++) {
-                const race = races[index];
-                let driverStandings = null;
+            for (var key in object) {
+                counter = counter + 1
                 let currentStandings = null;
-                if (index !== 0) {
-                    driverStandings = await axios.get(`https://ergast.com/api/f1/2024/${index}/driverStandings.json`);
-                    currentStandings = driverStandings.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+                const querySnap2 = await getDoc(query(doc(db, 'results', 'championshipStandings')))
+                let object2 = querySnap2.data()
+                if (object2[key]) {
+                    currentStandings = object2[key]
                 }
-                customResults.push({
-                    raceName: race.raceName,
-                    position1: race.Results[0].Driver.familyName,
-                    position2: race.Results[1].Driver.familyName,
-                    position3: race.Results[2].Driver.familyName,
-                    position4: race.Results[3].Driver.familyName,
-                    position5: race.Results[4].Driver.familyName,
-                    fastLab: race.Results.find(item => item.FastestLap.rank === '1').Driver.familyName,
-                    fastLapTime : race.Results.find(item => item.FastestLap.rank === '1').FastestLap.Time.time,
-                    currentStandings
-                });
+                if (object.hasOwnProperty(key)) {
+                    customResults.push({
+                        raceName: key,
+                        raceNumber: object[key].raceNumber,
+                        position1: object[key].position1,
+                        position2: object[key].position2,
+                        position3: object[key].position3,
+                        position4: object[key].position4,
+                        position5: object[key].position5,
+                        fastLap: object[key].fastLap,
+                        fastLapTime: object[key].fastLapTime,
+                        currentStandings
+                    });
+                }
             }
-            this.latestRace = results.data.MRData.RaceTable.Races.slice(-1)[0];
-            this.latestRaceName = this.latestRace.raceName
+            this.latestRaceName = customResults.find(o => o.raceNumber === `${counter}`).raceName;
+            this.latestRaceNumber = counter;
+
             return customResults;
         },
         async fetchUsersData() {
@@ -228,10 +202,14 @@ export default {
                             if (userPrediction[`position${posNr}`] == raceResult[`position${posNr}`]) {
                                 let bonusPoints = 0;
                                 if (raceResult.currentStandings !== null) {
-                                    // const currentPos = raceResult.currentStandings
-                                    //     .findIndex(standing => standing.Driver.familyName == userPrediction[`position${posNr}`]) - (posNr-1);  
-                                    // bonusPoints = Math.abs(currentPos);
-                                    //console.log(currentPos)
+                                    let currentPos = null;
+                                    for (const [key, value] of Object.entries(raceResult.currentStandings)) {
+                                        if (value === userPrediction[`position${posNr}`]) {
+                                            currentPos = parseInt(key.slice(8)) - (posNr - 1);
+                                        }
+                                    }
+                                    bonusPoints = Math.abs(currentPos);
+                                    console.log(bonusPoints)
                                 }
                                 points += (bonusPoints + 2);
                                 pointsLoop += bonusPoints + 2
@@ -244,17 +222,17 @@ export default {
                         }
 
                         // Compute fastest lap time difference
-                        
+
                         if (userPrediction.fastestLapMinutes && userPrediction.fastestLapSeconds && userPrediction.fastestLapMilliseconds) {
                             let lapTimeDifference = Math.abs(moment(`${userPrediction.fastestLapMinutes}:${userPrediction.fastestLapSeconds}.${userPrediction.fastestLapMilliseconds}`, 'mm:ss.SSS').diff(moment(raceResult.fastLapTime, 'mm:ss.SSS')))
                             //lapTimeDifferenceArray.push({[userPrediction.userName] : {[raceResult.raceName] : lapTimeDifference}})
 
 
                             if (!diffObj[raceResult.raceName]) {
-                                diffObj = Object.assign(diffObj, {[raceResult.raceName] : {}})
-                                diffObj[raceResult.raceName] = Object.assign(diffObj[raceResult.raceName], {[user.userName] : lapTimeDifference})
+                                diffObj = Object.assign(diffObj, { [raceResult.raceName]: {} })
+                                diffObj[raceResult.raceName] = Object.assign(diffObj[raceResult.raceName], { [user.userName]: lapTimeDifference })
                             } else {
-                                diffObj[raceResult.raceName] = Object.assign(diffObj[raceResult.raceName], {[user.userName] : lapTimeDifference})
+                                diffObj[raceResult.raceName] = Object.assign(diffObj[raceResult.raceName], { [user.userName]: lapTimeDifference })
                             }
                         }
 
@@ -276,46 +254,41 @@ export default {
                         points += top5Points
                         pointsLoop += top5Points
                     }
-                    this.raceResultsPerRace.push({[raceResult.raceName] : {[user.userName] : pointsLoop}})
+                    this.raceResultsPerRace.push({ [raceResult.raceName]: { [user.userName]: pointsLoop } })
                 });
                 user.points = points;
             });
-            //console.log(this.raceResultsPerRace)
             if (Object.keys(diffObj).length !== 0) {
-                console.log(diffObj)
-                console.log('Daaaaag')
                 for (const [race, value] of Object.entries(diffObj)) {
-
-                    var winner = Object.keys(value).reduce(function(a, b){ return value[a] < value[b] ? a : b });
-                    console.log(winner)
+                    var winner = Object.keys(value).reduce(function (a, b) { return value[a] < value[b] ? a : b });
                     let objIndex = this.users.findIndex(obj => obj.userName == winner);
-                    this.users[objIndex].points = this.users[objIndex].points + 5
 
-                    this.fastestLapTimeWinners = Object.assign(this.fastestLapTimeWinners, {[race] : {firstPlace : winner}})
+                    this.users[objIndex].points = this.users[objIndex].points + 5
+                    this.fastestLapTimeWinners = Object.assign(this.fastestLapTimeWinners, { [race]: { firstPlace: winner } })
                 }
                 this.latestFastestLapTimeWinner = this.fastestLapTimeWinners[this.latestRaceName].firstPlace
             }
-            
+
             this.users.sort((a, b) => b.points - a.points);
             this.isLoading = false
         },
         async pushStandingsToFirebase() {
             let userPoints = {
-                roundNr: parseInt(this.latestRace.round)
+                roundNr: this.latestRaceNumber
             }
             for (let i = 0; i < this.users.length; i++) {
                 let userpointsLoop = {
                     [this.users[i].userName]: this.users[i].points,
-                } 
+                }
                 Object.assign(userPoints, userpointsLoop)
-                
+
             }
             await setDoc(doc(db, 'standings', 'allStandings'), {
-                [this.latestRace.raceName] : userPoints
+                [this.latestRaceName]: userPoints
             }, { merge: true })
             if (this.fastestLapTimeWinners) {
                 await setDoc(doc(db, 'standings', 'allStandings'), {
-                    fastestLapTimeWinners : this.fastestLapTimeWinners
+                    fastestLapTimeWinners: this.fastestLapTimeWinners
                 }, { merge: true })
             }
             for (let i = 0; i < this.raceResultsPerRace.length; i++) {
@@ -323,7 +296,7 @@ export default {
                 let testObject = this.raceResultsPerRace[i][grandPrixName]
                 let userNameTest = Object.keys(this.raceResultsPerRace[i][grandPrixName])[0]
                 await setDoc(doc(db, 'standings', grandPrixName), {
-                    [userNameTest] : testObject[userNameTest]
+                    [userNameTest]: testObject[userNameTest]
                 }, { merge: true })
             }
         },
@@ -336,10 +309,10 @@ export default {
         async pushChampionshipStandingsToFirebase() {
             await setDoc(doc(db, 'results', 'championshipStandings'), {
                 [this.raceNameChampionshipStandings]: this.championshipStandings
-        }, { merge: true });
-        alert('Succesfully pushed championshipstandings to Firebase')
+            }, { merge: true });
+            alert('Succesfully pushed championshipstandings to Firebase')
         }
     }
 }
-    
+
 </script>
