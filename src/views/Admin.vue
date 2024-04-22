@@ -216,7 +216,7 @@ export default {
                             }
                         }
                         // Compute fastest lap points
-                        if (userPrediction.fastLab == raceResult.fastLab) {
+                        if (userPrediction.fastLab == raceResult.fastLap) {
                             points += 5;
                             pointsLoop += 5;
                         }
@@ -238,7 +238,7 @@ export default {
 
                         // Compute top 5 points
                         let cloneUserPrediction = (({ fastLab, ...o }) => o)(userPrediction) // remove b and c
-                        let cloneRaceResult = (({ fastLab, ...o }) => o)(raceResult)
+                        let cloneRaceResult = (({ fastLap, ...o }) => o)(raceResult)
                         let top5Points = 0
                         for (var key in cloneUserPrediction) {
                             if (cloneUserPrediction.hasOwnProperty(key)) {
