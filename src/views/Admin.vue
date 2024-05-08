@@ -1,79 +1,107 @@
 <template>
-    <h1>Admin page</h1>
-    <h3>Welkom {{ userName }}</h3>
-    <h6>{{ raceName }}</h6>
-    <p>{{ raceResult }}</p>
-    <h5>Verzend race resultaten voor geselecteerde race</h5>
-    <label>Race Name</label>
-    <input class="form-control" placeholder="Race Name" v-model="raceName" style="max-width: 415px;" type="string">
-    <label>Race Number</label>
-    <input class="form-control" placeholder="Race Number" v-model="raceResult['raceNumber']" style="max-width: 415px;"
-        type="string">
-    <label>Fastest Lap Time</label>
-    <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="raceResult['fastLapTime']"
-        style="max-width: 415px;" type="string">
-    <div class="col-md-4 offset-md-0">
-        <label>Fastest Lap</label>
-        <select class="form-select" aria-label="Default select example" v-model="raceResult['fastLap']">
-            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-        </select>
-    </div>
-    <div v-for="(item, index) in 5" :key=item>
-        <div class="row">
-            <div class="col-md-4 offset-md-0">
-                <label>Plek {{ index + 1 }}</label>
-                <select class="form-select" aria-label="Default select example"
-                    v-model="raceResult['position' + (index + 1)]">
-                    <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-                </select>
-            </div>
+    <h1>
+        Manage backend
+        <small class="text-body-secondary">- welkom {{ userName }}</small>
+    </h1>
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Resultaten</button>
+            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">WK stand</button>
+            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Puntentelling</button>
         </div>
-    </div>
-    <button type="button" class="btn btn-primary" @click="pushRaceResultsToFirebase">Verzend race resultaten</button>
-    <hr>
-    <h6>{{ raceNameChampionshipStandings }}</h6>
-    <p>{{ championshipStandings }}</p>
-    <h5>Verzend stand in wk na geselecteerde race</h5>
-    <input class="form-control" placeholder="Race Name" v-model="raceNameChampionshipStandings"
-        style="max-width: 415px;" type="string">
-    <div v-for="(item, index) in currentDrivers" :key=item>
-        <div class="row">
-            <div class="col-md-4 offset-md-0">
-                <label>Plek {{ index + 1 }}</label>
-                <select class="form-select" aria-label="Default select example"
-                    v-model="championshipStandings['position' + (index + 1)]">
-                    <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <button type="button" class="btn btn-primary" @click="pushChampionshipStandingsToFirebase">Verzend stand</button>
-    <hr>
-    <button type="button" class="btn btn-primary" @click="fetchData">Bereken Punten</button>
-    <button type="button" class="btn btn-primary" @click="pushStandingsToFirebase">Push to firebase</button>
-    <h2>Winner of the fastest laptime at the {{ latestRaceName }}:</h2>
-    <p v-if="latestFastestLapTimeWinner"> {{ latestFastestLapTimeWinner }} </p>
-    <p v-else> None </p>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+            
 
-    <h2>Puntentelling</h2>
-    <table class="table">
-        <thead class="table-light">
-            <tr>
-                <th scope="col" style="width: 15%">Pos</th>
-                <th scope="col" style="width: 60%">Name</th>
-                <th scope="col" style="width: 25%">Points</th>
-            </tr>
-        </thead>
-        <template v-if="!isLoading">
-            <tbody v-for="(user, index) in users" :key="index">
-                <tr>
-                    <td scope="row">{{ index + 1 }}</td>
-                    <td>{{ user.userName }}</td>
-                    <td>{{ user.points }}</td>
-                </tr>
-            </tbody>
-        </template>
-    </table>
+            <p v-if="raceName">{{ raceName }}</p>
+            <p v-if="Object.keys(raceResult).length">{{ raceResult }}</p>
+
+            <br>
+            
+            <label>Race Name</label>
+            <input class="form-control" placeholder="Race Name" v-model="raceName" style="max-width: 415px;" type="string">
+            <label>Race Number</label>
+            <input class="form-control" placeholder="Race Number" v-model="raceResult['raceNumber']" style="max-width: 415px;"
+                type="string">
+            <label>Fastest Lap Time</label>
+            <input class="form-control" placeholder="Fastest laptime (m:ss.mmm)" v-model="raceResult['fastLapTime']"
+                style="max-width: 415px;" type="string">
+            <div class="col-md-4 offset-md-0">
+                <label>Fastest Lap</label>
+                <select class="form-select" aria-label="Default select example" v-model="raceResult['fastLap']">
+                    <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+                </select>
+            </div>
+            <div v-for="(item, index) in 5" :key=item>
+                <div class="row">
+                    <div class="col-md-4 offset-md-0">
+                        <label>Plek {{ index + 1 }}</label>
+                        <select class="form-select" aria-label="Default select example"
+                            v-model="raceResult['position' + (index + 1)]">
+                            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button type="button" class="btn btn-primary" @click="pushRaceResultsToFirebase">Verzend race resultaten</button>
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+            <br v-if="raceNameChampionshipStandings">
+
+            <p v-if="raceNameChampionshipStandings">{{ raceNameChampionshipStandings }}</p>
+            <p v-if="Object.keys(championshipStandings).length">{{ championshipStandings }}</p>
+            <br>
+            <label>Race name</label>
+            <input class="form-control" v-model="raceNameChampionshipStandings"
+                style="max-width: 415px;" type="string">
+            <div v-for="(item, index) in currentDrivers" :key=item>
+                <div class="row">
+                    <div class="col-md-4 offset-md-0">
+                        <label>Plek {{ index + 1 }}</label>
+                        <select class="form-select" aria-label="Default select example"
+                            v-model="championshipStandings['position' + (index + 1)]">
+                            <option v-for="(item, index) in currentDrivers" :value="item" :key="index">{{ item }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button type="button" class="btn btn-primary" @click="pushChampionshipStandingsToFirebase">Verzend stand</button>
+            <br>
+            <br>
+        </div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+            <br>
+            <button type="button" class="btn btn-primary me-1" @click="fetchData">Bereken Punten</button>
+            <button type="button" class="btn btn-outline-primary" @click="pushStandingsToFirebase">Definitief opslaan</button>
+            <br>
+            <p v-if="latestRacename">Winner of the fastest laptime at the {{ latestRaceName }}: 
+                <span v-if="latestFastestLapTimeWinner">{{ latestFastestLapTimeWinner }}</span>
+                <span v-else>Niemand</span>
+            </p>
+            <br>
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" style="width: 15%">Pos</th>
+                        <th scope="col" style="width: 60%">Naam</th>
+                        <th scope="col" style="width: 25%">Punten</th>
+                    </tr>
+                </thead>
+                <template v-if="!isLoading">
+                    <tbody v-for="(user, index) in users" :key="index">
+                        <tr>
+                            <td scope="row">{{ index + 1 }}</td>
+                            <td>{{ user.userName }}</td>
+                            <td>{{ user.points }}</td>
+                        </tr>
+                    </tbody>
+                </template>
+            </table>
+        </div>
+    </div>
 </template>
 
 <script>
